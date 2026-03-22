@@ -1,0 +1,11 @@
+../Core/Src/System/tim.c:27:7:delay_us	16	static
+../Core/Src/System/tim.c:39:6:MX_TIM1_Init	112	static
+../Core/Src/System/tim.c:112:6:MX_TIM2_Init	56	static
+../Core/Src/System/tim.c:156:6:MX_TIM6_Init	24	static
+../Core/Src/System/tim.c:188:6:HAL_TIM_Base_MspInit	24	static
+../Core/Src/System/tim.c:212:6:HAL_TIM_Encoder_MspInit	48	static
+../Core/Src/System/tim.c:241:6:HAL_TIM_MspPostInit	40	static
+../Core/Src/System/tim.c:267:6:HAL_TIM_Base_MspDeInit	16	static
+../Core/Src/System/tim.c:290:6:HAL_TIM_Encoder_MspDeInit	16	static
+../Core/Src/System/tim.c:315:20:getTimInst	16	static
+../Core/Src/System/tim.c:329:14:getTim1Freq	8	static

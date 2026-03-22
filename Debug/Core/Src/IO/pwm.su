@@ -1,0 +1,2 @@
+../Core/Src/IO/pwm.c:14:6:StartPWM	24	static
+../Core/Src/IO/pwm.c:51:6:changePWMFreq	24	static
