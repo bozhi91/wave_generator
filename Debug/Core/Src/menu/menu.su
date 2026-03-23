@@ -16,4 +16,3 @@
 ../Core/Src/menu/menu.c:216:6:simulation	8	static
 ../Core/Src/menu/menu.c:226:6:stop	8	static
 ../Core/Src/menu/menu.c:230:6:mainMenu	8	static
-../Core/Src/menu/menu.c:234:6:readEncoder	24	static

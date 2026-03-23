@@ -231,15 +231,3 @@ void mainMenu(void){
 	display_string("=MAIN-MENU=");
 }
 
-void readEncoder(void){
-
-	char str[10];
-	static short enc_val = 0;
-
-	if(enc_val !=  getEncoderVal()){
-		enc_val = getEncoderVal();
-		snprintf(str, sizeof str, "Enc:%d", enc_val);
-		display_string(str);
-	}
-}
-

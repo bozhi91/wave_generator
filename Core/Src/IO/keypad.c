@@ -32,8 +32,23 @@ uint8_t read_buttons(void);
 static short encode_count = 0;
 static unsigned char encode_dir = 0;
 
+void enableEncoder(char status){
+
+	if(status == 1){
+		HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+	}
+	else{
+		HAL_TIM_Encoder_Stop(&htim2, TIM_CHANNEL_ALL);
+	}
+}
+
 unsigned char getEncoerDir(void){
 	return encode_dir;
+}
+
+void setEncoderVal(short value){
+	encode_count = value;
+	__HAL_TIM_SET_COUNTER(getTimInst(2), value);
 }
 
 short getEncoderVal(void){
@@ -49,6 +64,12 @@ void readEncoderData(void){
 	int16_t time_count = __HAL_TIM_GET_COUNTER(&htim2);
 	encode_count = time_count/4;
 	encode_count*=-1;
+
+	//Allow positive values only!
+	if(encode_count<0){
+		encode_count = 0;
+		__HAL_TIM_SET_COUNTER(getTimInst(2), 0);
+	}
 }
 
 void kbdDriver(void){
@@ -115,7 +136,6 @@ unsigned char isKey_3(void){
 unsigned char isKey_4(void){
 	return isKeyPressed(4);
 }
-
 
 //Returns 1 if the requested key is pressed.
 //Returns 0 otherwise.

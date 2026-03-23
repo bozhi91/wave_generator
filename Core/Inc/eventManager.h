@@ -21,9 +21,9 @@
 	}DeviceStates;
 
   extern void eventManager(void);
-
   void setState(DeviceStates state);
   DeviceStates getState(void);
+  void menuInit(void);
 
   typedef struct{
 
@@ -31,6 +31,7 @@
     void (*ev_ptr)(void);    		//Function pointer to the event
     unsigned long timeout;  		//Call the event every X milliseconds
     unsigned long last_call; 		//Elapsed time since the last call of the event
+
   }Event;
 
   typedef struct{
@@ -39,6 +40,7 @@
 	unsigned char new_state;		//The new state we want to jump to
 	unsigned char(*trigger)(void);  //Function pointer to the trigger that will call the event
     void (*ev_ptr)(void);    		//Function pointer to the event
+
   }State_Manager;
 
 #endif /* INC_EVENTMANAGER_H_ */

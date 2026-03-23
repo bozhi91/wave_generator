@@ -125,11 +125,11 @@ int main(void){
 
   initOLED();
   initSignalGen();
-  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+  enableEncoder(1);
+  menuInit();
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
   while(1){
 
 	  kbdDriver();

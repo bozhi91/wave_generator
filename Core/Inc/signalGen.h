@@ -16,5 +16,6 @@
 
 void initSignalGen(void);
 void outputSignal(void);
+void dispCurrentFreq(void);
 
 #endif /* INC_SIGNALGEN_H_ */

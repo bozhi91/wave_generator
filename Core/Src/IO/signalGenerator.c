@@ -8,14 +8,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+
 #include "signalGen.h"
 #include "dac.h"
 #include "pwm.h"
 #include "display.h"
 #include "io.h"
+#include "tim.h"
 
 static void GenerateSineTable(void);
 static void genTriangleWave(void);
+static unsigned int getFrequency(void);
 
 uint16_t sine_table[N_SAMPLES];
 //uint16_t triangle_table[N_SAMPLES];
@@ -36,40 +39,70 @@ void initSignalGen(void){
 	//DAC_Write(2048);//12bits DAC - 0:4095
 
 	GenerateSineTable();
-	startDAC(sine_table, N_SAMPLES, 2000);
+	startDAC(sine_table, N_SAMPLES, 1000);
 }
 
+/*
+ *  Read the encoder and return its value as a positive (in KHz)
+ * */
+static unsigned int getFrequency(void){
+
+	unsigned int enc_data = getEncoderVal();
+
+	if(enc_data == 0){
+		enc_data++;
+	}
+	enc_data*=1000;
+
+	return enc_data;
+}
+
+/**
+ * Reads the frequency and display it on the screen.
+ * The value will be displayed only if the encoder is rotated.
+ * */
+void dispCurrentFreq(void){
+
+	char str[15];
+	static unsigned int freq = 0xffff;
+
+	if(freq !=  getFrequency()){
+		freq = getFrequency();
+		snprintf(str, sizeof str, "Off:%dHz", freq);
+		display_string(str);
+	}
+}
+
+/**
+ * Toggle the DAC channel. When the channel is ON, a sine wave signal(or another type)
+ * is send to the output pin with a frequency defined by the rotary encoder.
+ * The current frequency will be shown on the display.
+ * */
 static unsigned char signal_state = 0;
 void outputSignal(void){
 
 	char str[20];
+	unsigned int enc_data = getFrequency();
 
 	if(signal_state==0){
 
 		signal_state = 1;
 
-		unsigned int enc_data = getEncoderVal();
-
-		if(enc_data<0){
-			enc_data*=-1;
-		}
-		else if(enc_data == 0){
-			enc_data++;
-		}
-		enc_data*=1000;
-
-		snprintf(str,sizeof str, "ON:%d Hz",enc_data);
+		enableEncoder(0);
+		snprintf(str,sizeof str, "ON:%dHz", enc_data);
 		display_string(str);
-
 		Set_DAC_Frequency(enc_data);
-		toggleDAC(1);
 	}
 	else{
-		signal_state=0;
-		display_string("DAC: OFF");
+		signal_state = 0;
+
+		enableEncoder(1);
+		snprintf(str, sizeof str, "Off:%dHz", enc_data);
+		display_string(str);
 		toggleDAC(0);
 	}
 }
+
 
 static void GenerateSineTable(void){
 

@@ -17,8 +17,7 @@ static unsigned char c_state = MAIN_MENU;
 
 //These events will run automatically by the event manager
 Event eventList[] = {
-	{ ST_SIMULATION, simulation,  1000, 0 },
-	{ ST_ENCODER,    readEncoder, 50,  0 },
+	{ MAIN_MENU,	dispCurrentFreq, 100,  0 },
 };
 
 //This states are set manually by the user by pressing a button or when another event is triggered
@@ -37,7 +36,7 @@ State_Manager stateList[] = {
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_3,  menuBrowser }, //BROWSE SETTINGS MENU
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_2,  menuSelect  }, //SELECT SETTINGS MENU
 
-	{ MAIN_MENU,     ST_ENCODER,    isKey_4,  readEncoder }, //OPEN   ENCODER  MENU
+	{ MAIN_MENU,     ST_ENCODER,    isKey_4,  dispCurrentFreq }, //OPEN   ENCODER  MENU
 
 	{ ST_ENCODER,     MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
 	{ CONFIG_MENU,    MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
@@ -49,7 +48,9 @@ State_Manager stateList[] = {
 void menuInit(void){
 
 	c_state = MAIN_MENU;
+	setEncoderVal(1);
 	resetKey();
+	dispCurrentFreq();
 }
 
 void setState(DeviceStates state){

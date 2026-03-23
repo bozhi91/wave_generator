@@ -162,7 +162,7 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* dacHandle)
 	void toggleDAC(char status){
 
 		if(status == 0){
-			Set_DAC_Frequency(0);
+		//	Set_DAC_Frequency(0);
 			HAL_TIM_Base_Stop( getTimInst(6) );
 		}
 		else if(status == 1){

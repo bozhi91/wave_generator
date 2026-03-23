@@ -23,6 +23,5 @@
 	void menuSelect(void);
 
 	void simulation(void);
-	void readEncoder(void);
 
 #endif
