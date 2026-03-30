@@ -83,6 +83,11 @@ typedef enum {
 
 void SSD1306_setOrientation(SSD1306_ORIENTATION orientation);
 
+void drawBMP(
+		unsigned char startX, unsigned char  startY,
+		unsigned char width, unsigned char  height,
+		const unsigned char* bitmap, unsigned char color, unsigned short bg_color);
+
 /**
  * @brief  Initializes SSD1306 LCD
  * @param  None

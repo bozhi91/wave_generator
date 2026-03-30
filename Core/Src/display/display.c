@@ -7,6 +7,9 @@
 #include "display.h"
 #include <stdio.h>
 
+#define MAX_ROW_SIZE 50
+#define LINE_SPACING 4
+
 /*
 static void i2cscan(void){
 
@@ -29,31 +32,87 @@ static void i2cscan(void){
 	 HAL_I2C_ModeTypeDef mode = HAL_I2C_GetMode(&hi2c1);
 }*/
 
+static uint16_t cursor_x=0, cursor_y=0;
+static FontDef_t cFont;
+static int chars_per_row = 10;
+
+/** Initialize the OELD driver with params:
+ *  - I2C: 1
+ *  - Pos(x,y): 0,0
+ *  - BG Color: Black
+ *  - Font: 11x18
+ *
+ *https://blog.embeddedexpert.io/?p=674
+ * **/
+extern unsigned char logo[];
+
 void initOLED(void){
 
 	/* Initialize the OLED Display and
 	 * link it to the I2C_1 port
 	 */
 	SSD1306_Init(&hi2c1);
-
 	SSD1306_Fill(SSD1306_COLOR_BLACK);
-	SSD1306_GotoXY (0,0);
+	SSD1306_GotoXY (0, 0);
 
-	SSD1306_Puts ("Display RDY!", &Font_11x18, 1);
+	setFont(1);
+	chars_per_row = SSD1306_WIDTH/cFont.FontWidth;
+
+	printAt("DISPLAY READY!",0,0);
+
+	//drawBMP(5,5,15,9, logo, 1,0);
+	//SSD1306_UpdateScreen();
+
+	//print("Freq:2.5 Khz");
+	//printAt("ABCDEFGHIJKLM",0, 0);
+	//printAt("NOPQRSTUVWXYZ",0, 1);
+
+}
+
+void setFont(int font_id){
+	cFont = FONT_ARRAY[font_id];
+}
+
+void printAt(const char* str, int x, int y){
+
+	cursor_x = x * cFont.FontWidth;
+	cursor_y = y * (cFont.FontHeight + LINE_SPACING);
+
+	SSD1306_GotoXY(cursor_x, cursor_y);
+	print(str);
+}
+
+void print(const char* str){
+
+	char buff[50] = {0};
+
+	for(int i=0; i<strlen(str); i++){
+		buff[i] = toupper(str[i]);
+	}
+
+	clr_row(cursor_y);
+	SSD1306_GotoXY(0, cursor_y);
+	SSD1306_Puts(buff, &cFont, 1);
 	SSD1306_UpdateScreen();
 }
 
-void display_string(const char* str){
+void clr_row(int row){
 
-	char buff[20];
-	memset(buff, ' ', sizeof buff);
-	SSD1306_GotoXY (0,0);
-	SSD1306_Puts((char*)buff, &Font_11x18, 1);
-	SSD1306_UpdateScreen();
+	char row_buff[MAX_ROW_SIZE] = { 0 };
+	int row_size = chars_per_row < (sizeof (row_buff)) ? chars_per_row : (sizeof row_buff);
 
-	SSD1306_GotoXY (0,0);
-	SSD1306_Puts((char*)str, &Font_11x18, 1);
+	memset(row_buff, ' ', row_size);
+	SSD1306_GotoXY(0, row);
+
+	SSD1306_Puts((char*)row_buff, &cFont, 1);
 	SSD1306_UpdateScreen();
+}
+
+void clrscr(void){
+
+	for(int i=0;i<4;i++){
+		clr_row(i);
+	}
 }
 
 void dispay_write(int c){
@@ -75,7 +134,7 @@ void dispay_write(int c){
 	//New line is found, we send the buffer to the display
 	if(c=='\n' && c_count>0){
 
-		SSD1306_Puts(buff, &Font_11x18, 1);
+		SSD1306_Puts(buff, &cFont, 1);
 		SSD1306_UpdateScreen();
 
 		c_count=0;

@@ -9,7 +9,12 @@
 #define INC_PERIPHERALS_DISPLAY_H_
 
 	void dispay_write(int c);
-	void display_string(const char* str);
+	void print(const char* str);
+	void printAt(const char* str, int x, int y);
+
 	void initOLED(void);
+	void clr_row(int row);
+	void clrscr(void);
+	void setFont(int font_id);
 
 #endif /* INC_PERIPHERALS_DISPLAY_H_ */

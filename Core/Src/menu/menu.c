@@ -12,17 +12,20 @@
 #include "io.h"
 #include "display.h"
 #include "eventManager.h"
+#include "signalGen.h"
 
 #define MAX_OPTIONS 10
 
 static int menu_index = 0;
 static int menu_size  = 0;
+static char submenu_selected = 1;
 
 void op1(void);
 void op2(void);
 void op3(void);
 
 static int amin_id = 0;
+static char menuTitle[20];
 
 Menu menu_table[MAX_OPTIONS];
 
@@ -35,31 +38,54 @@ void op2(void){
 	setState(ST_SIMULATION);
 }
 void op3(void){
-	display_string("option 3");
+	print("option 3");
 }
 
+
 /**
- * Initialize the menu by a given menu table
+ * Initialize any menu by a given menu table
  * and display the first menu option.
+ *
+ * KEYS:
+ *
+ * 1) Play/Stop the signal generator. If the config menu is opened,
+ *    you'll go back to the main menu
+ * 2) Open and browse through the menu.
+ * 3) Select a menu option
 **/
-void initMenu(Menu *menu_ptr, int size){
+void initMenu(char* title, Menu *menu_ptr, int size){
 
 	menu_index = 0;
 	menu_size  = size;
+
+	strcpy(menuTitle, title);
+	printAt(title, 0, 0);
 
 	memset(menu_table, 0,  sizeof(menu_table));
 	memcpy(menu_table, menu_ptr, sizeof(Menu)*size);
 	menuBrowser();
 }
 
+/** Browse the menu options.
+ *  Each time the KEY 2 is pressed, the next menu option will appear on the screen.
+ *  The menu will be browsed in a loop until the key 1 is pressed.
+ *  This will only display the menu title and the currently selected submenu option.
+ *
+ *  - To enter/browse the menu, press key 2.
+ * */
 void menuBrowser(void){
 
 	if(menu_index == menu_size){
 		menu_index = 0;
 	}
 
+	if(submenu_selected == 1){
+		printAt(menuTitle, 0, 0);
+		submenu_selected = 0;
+	}
+
 	//Display the menu option label
-	display_string(menu_table[menu_index].op_name);
+	printAt(menu_table[menu_index].op_name,0,1);
 
 	//It the hover function is set, call it.
 	if(menu_table[menu_index].f_hover != 0){
@@ -68,135 +94,37 @@ void menuBrowser(void){
 	menu_index++;
 }
 
+/** Enter/select the current menu option displayed on the screen.
+ *  - By pressing key 3, you open the submenu.
+ *
+ * */
 void menuSelect(void){
 
 	int tmp_index = (menu_index == 0) ? (menu_size-1) : menu_index-1;
 	menu_table[tmp_index].f_ptr();
-	//set_state(MAIN_MENU)
+	submenu_selected = 1;
 }
 
-static unsigned char func_type   = 0;
-static unsigned char wave_type   = 0;
-static unsigned char burst_type  = 0;
-static unsigned char burst_value = 0;
-
-void set_func(void){
-
-	static int index   = 1;
-	char *func_array[] = {
-			"Sine",
-			"Square",
-			"Triang.",
-			"Saw"
-	};
-	char str[15];
-	int menu_size = sizeof(func_array) / sizeof(func_array[0]);
-
-	index++;
-	if(index == menu_size){
-		index = 0;
-	}
-	func_type = index;
-
-	snprintf(str, sizeof str, "Func:%s", func_array[func_type]);
-	display_string(str);
-}
-
-void set_wave(void){
-
-	static int index   = 1;
-	char *wave_array[] = {
-			"Full",
-			"Half",
-			"Rect",
-	};
-	char str[15];
-    int menu_size = sizeof(wave_array) / sizeof(wave_array[0]);
-
-	snprintf(str, sizeof str, "Wave:%s", wave_array[index]);
-	display_string(str);
-
-	wave_type = index;
-	index++;
-	if(index == menu_size){
-		index = 0;
-	}
-}
-
-void set_burst(void){
-
-	static int index    = 1;
-	char *burst_array[] = {
-			"None",
-			"Time",
-			"Pulse",
-	};
-	char str[15];
-    int menu_size = sizeof(burst_array) / sizeof(burst_array[0]);
-
-	snprintf(str, sizeof str, "Burst:%s", burst_array[index]);
-	display_string(str);
-
-	burst_type = index;
-	index++;
-	if(index == menu_size){
-		index = 0;
-	}
-}
-
-
-void hover_func(int param){
-
-	char str[15];
-	char *func_array[] = {
-			"Sine",
-			"Square",
-			"Triang.",
-			"Saw"
-	};
-
-	if(param == 1){
-		//todo: print the submenu text on a new line
-		//Let the menu label remain visible
-		snprintf(str, sizeof str, "Func:%s", func_array[func_type]);
-		display_string(str);
-	}
-}
-
-void about(void){
-	display_string("(C)Bozhidar");
-}
-
-void menu_cfg(void){
-
-	Menu menu_cfg[] = {
-			{ "Func" , set_func , hover_func, 1 }, //todo: when an menu option is displayed, open the submenu and display the selected parameter
-			{ "Wave" , set_wave , hover_func, 2 },
-			{ "Burst", set_burst, hover_func, 3 },
-			{ "About", about,     0}
-	};
-
-	initMenu(menu_cfg, sizeof(menu_cfg) / sizeof(menu_cfg[0]) );
-}
-
+//EXAMPLE FUNCTIONS. YOU CAN DELETE THEM
+/////////////////////////////////////////////////////////////////////////////
 void menu_set(void){
 
 	Menu menu_set[] = {
+
 			{ "ANIMATION 1", op1, 0 },
 			{ "ANIMATION 2", op2, 0 },
 			{ "SET 3",       op3, 0 }
 	};
 
-	initMenu(menu_set, sizeof(menu_set) / sizeof(menu_set[0]) );
+	initMenu("Animation",menu_set, sizeof(menu_set) / sizeof(menu_set[0]) );
 }
-
 
 void anim_1(void){
 
 	char* text[] = {"Another", "Test","Running"};
 	static int st = 0;
 
-	display_string(text[st++]);
+	print(text[st++]);
 	if(st>2){
 		st=0;
 	}
@@ -207,7 +135,7 @@ void anim_2(void){
 	char* text[] = {"Running", "Simulation","Program"};
 	static int st = 0;
 
-	display_string(text[st++]);
+	print(text[st++]);
 	if(st>2){
 		st=0;
 	}
@@ -224,10 +152,6 @@ void simulation(void){
 }
 
 void stop(void){
-	display_string("STOPED");
-}
-
-void mainMenu(void){
-	display_string("=MAIN-MENU=");
+	print("STOPED");
 }
 

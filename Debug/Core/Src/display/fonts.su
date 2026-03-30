@@ -1,1 +1,1 @@
-../Core/Src/display/fonts.c:334:7:FONTS_GetStringSize	32	static
+../Core/Src/display/fonts.c:344:7:FONTS_GetStringSize	32	static

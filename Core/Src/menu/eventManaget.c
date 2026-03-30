@@ -9,6 +9,7 @@
 #include "eventManager.h"
 #include "main.h"
 #include "menu.h"
+#include "menu_simulation.h"
 #include "io.h"
 #include "display.h"
 #include "signalGen.h"
@@ -17,14 +18,13 @@ static unsigned char c_state = MAIN_MENU;
 
 //These events will run automatically by the event manager
 Event eventList[] = {
-	{ MAIN_MENU,	dispCurrentFreq, 100,  0 },
+	{ MAIN_MENU,	updateFrequency, 100,  0 },
 };
 
 //This states are set manually by the user by pressing a button or when another event is triggered
 State_Manager stateList[] = {
 
-	 //Current St |  New State    |  Trigger | New Event
-
+	//Current St |  New State    |  Trigger | New Event
 	{ MAIN_MENU,    PLAY_STATE, 	isKey_1,  outputSignal }, //START SIGNAL GENERATOR
 	{ PLAY_STATE,   MAIN_MENU,  	isKey_1,  outputSignal }, //STOP  SIGNAL GENERATOR
 
@@ -36,7 +36,7 @@ State_Manager stateList[] = {
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_3,  menuBrowser }, //BROWSE SETTINGS MENU
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_2,  menuSelect  }, //SELECT SETTINGS MENU
 
-	{ MAIN_MENU,     ST_ENCODER,    isKey_4,  dispCurrentFreq }, //OPEN   ENCODER  MENU
+	{ MAIN_MENU,     ST_ENCODER,    isKey_4,  updateFrequency }, //OPEN   ENCODER  MENU
 
 	{ ST_ENCODER,     MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
 	{ CONFIG_MENU,    MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
@@ -50,7 +50,7 @@ void menuInit(void){
 	c_state = MAIN_MENU;
 	setEncoderVal(1);
 	resetKey();
-	dispCurrentFreq();
+	mainMenu();
 }
 
 void setState(DeviceStates state){
@@ -75,11 +75,9 @@ void eventManager(void){
  	     if((HAL_GetTick() - eventList[i].last_call > eventList[i].timeout) || eventList[i].last_call==0 ){
  	    	eventList[i].last_call = HAL_GetTick();
  	        eventList[i].ev_ptr();
- 	        //break;
  	      }
  	      else if(eventList[i].timeout == 0){ //If no timeout is defined, the function will be called without any delay
  	      	eventList[i].ev_ptr();
- 	        //break;
  	      }
  	 }
  	 else{

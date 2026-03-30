@@ -17,5 +17,7 @@
 void initSignalGen(void);
 void outputSignal(void);
 void dispCurrentFreq(void);
+void updateFrequency(void);
+unsigned int getCurrentFrequency(void);
 
 #endif /* INC_SIGNALGEN_H_ */

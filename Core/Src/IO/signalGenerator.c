@@ -18,7 +18,6 @@
 
 static void GenerateSineTable(void);
 static void genTriangleWave(void);
-static unsigned int getFrequency(void);
 
 uint16_t sine_table[N_SAMPLES];
 //uint16_t triangle_table[N_SAMPLES];
@@ -31,6 +30,7 @@ uint16_t sine_table[N_SAMPLES];
   printf("PCLK1 : %lu\n", HAL_RCC_GetPCLK1Freq());*/
 
 //DAC_Write(2047); // Send a constant impulse of 2048(out of 4095) to the DAC chanel
+static unsigned char simulation_state = 0;
 
 void initSignalGen(void){
 
@@ -44,8 +44,9 @@ void initSignalGen(void){
 
 /*
  *  Read the encoder and return its value as a positive (in KHz)
- * */
-static unsigned int getFrequency(void){
+ *
+ *  */
+unsigned int getCurrentFrequency(void){
 
 	unsigned int enc_data = getEncoderVal();
 
@@ -61,16 +62,20 @@ static unsigned int getFrequency(void){
  * Reads the frequency and display it on the screen.
  * The value will be displayed only if the encoder is rotated.
  * */
+void updateFrequency(void){
+
+	static unsigned int freq = 0xffff;
+	if(freq != getCurrentFrequency()){
+		freq = getCurrentFrequency();
+		dispCurrentFreq();
+	}
+}
+
 void dispCurrentFreq(void){
 
 	char str[15];
-	static unsigned int freq = 0xffff;
-
-	if(freq !=  getFrequency()){
-		freq = getFrequency();
-		snprintf(str, sizeof str, "Off:%dHz", freq);
-		display_string(str);
-	}
+	snprintf(str, sizeof str, "%s:%dHz", simulation_state?"ON":"OFF", getCurrentFrequency());
+	printAt(str,0,1);
 }
 
 /**
@@ -78,32 +83,32 @@ void dispCurrentFreq(void){
  * is send to the output pin with a frequency defined by the rotary encoder.
  * The current frequency will be shown on the display.
  * */
-static unsigned char signal_state = 0;
+
 void outputSignal(void){
 
-	char str[20];
-	unsigned int enc_data = getFrequency();
+	if(simulation_state==0){
 
-	if(signal_state==0){
-
-		signal_state = 1;
+		simulation_state = 1;
 
 		enableEncoder(0);
-		snprintf(str,sizeof str, "ON:%dHz", enc_data);
-		display_string(str);
-		Set_DAC_Frequency(enc_data);
+		dispCurrentFreq();
+		Set_DAC_Frequency(getCurrentFrequency());
 	}
 	else{
-		signal_state = 0;
+		simulation_state = 0;
 
 		enableEncoder(1);
-		snprintf(str, sizeof str, "Off:%dHz", enc_data);
-		display_string(str);
+		dispCurrentFreq();
 		toggleDAC(0);
 	}
 }
 
-
+/** Three types of wave might be generated:
+ * - A pure sine wave
+ * - A half-rectified
+ * - Full rectified
+ *
+ * */
 static void GenerateSineTable(void){
 
 	memset(sine_table, 0, sizeof sine_table);
@@ -126,6 +131,10 @@ static void GenerateSineTable(void){
     }
 }
 
+/** - You can generate a basic triangular wave.
+ *  - A half-rectified.
+ *  - Or a saw-tooth wave type.
+ * */
 static void genTriangleWave(void){
 
 	for(int i = 0; i < N_SAMPLES; i++){

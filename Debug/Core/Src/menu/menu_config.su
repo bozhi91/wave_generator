@@ -1,0 +1,6 @@
+../Core/Src/menu/menu_config.c:36:6:menu_cfg	120	static
+../Core/Src/menu/menu_config.c:49:13:about	8	static
+../Core/Src/menu/menu_config.c:55:13:set_func	32	static
+../Core/Src/menu/menu_config.c:71:13:set_wave	40	static
+../Core/Src/menu/menu_config.c:92:13:set_burst	40	static
+../Core/Src/menu/menu_config.c:113:13:hover_func	32	static

@@ -17,6 +17,8 @@
 "./Core/Src/main.o"
 "./Core/Src/menu/eventManaget.o"
 "./Core/Src/menu/menu.o"
+"./Core/Src/menu/menu_config.o"
+"./Core/Src/menu/menu_simulation.o"
 "./Core/Startup/startup_stm32f303k8tx.o"
 "./Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal.o"
 "./Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_cortex.o"

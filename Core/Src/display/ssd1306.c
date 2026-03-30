@@ -298,7 +298,8 @@ void SSD1306_GotoXY(uint16_t x, uint16_t y) {
 }
 
 char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
-	uint32_t i, b, j;
+
+	//uint32_t i, b, j;
 	
 	/* Check available space in LCD */
 	if (
@@ -310,7 +311,7 @@ char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
 	}
 	
 	/* Go through font */
-	for (i = 0; i < Font->FontHeight; i++) {
+	/*for (i = 0; i < Font->FontHeight; i++) {
 		b = Font->data[(ch - 32) * Font->FontHeight + i];
 		for (j = 0; j < Font->FontWidth; j++) {
 			if ((b << j) & 0x8000) {
@@ -319,13 +320,44 @@ char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
 				SSD1306_DrawPixel(SSD1306.CurrentX + j, (SSD1306.CurrentY + i), (SSD1306_COLOR_t)!color);
 			}
 		}
-	}
-	
+	}*/
+
+	int size = Font->size_data / (Font->FontWidth*2);
+	if(ch<32 || ch>(32+size ))
+		return 0;
+
+	const unsigned char *data = &Font->data[(ch - 32) * Font->FontWidth*2];
+	drawBMP(SSD1306.CurrentX, SSD1306.CurrentY, Font->FontWidth, Font->FontHeight, data, 1, 0);
+
+	char char_space = 1;
 	/* Increase pointer */
-	SSD1306.CurrentX += Font->FontWidth;
+	SSD1306.CurrentX += Font->FontWidth+char_space;
 	
 	/* Return character written */
 	return ch;
+}
+
+void drawBMP(unsigned char startX, unsigned char  startY, unsigned char width, unsigned char  height,
+  const unsigned char* bitmap, unsigned char color, unsigned short bg_color) {
+
+  int x = 0, y = 0;
+
+  for(int idx = 0; x < width; idx++){
+    for(int i = 0; i<8; i++){
+
+      SSD1306_DrawPixel(x + startX, y + startY, (bitmap[idx] >>i) & 1 ? color : bg_color);
+      y++;
+
+      if(y == height){
+        if(height%8 == 0){
+          idx++;
+        }
+        x++;
+        y = 0;
+        break;
+      }
+    }
+  }
 }
 
 char SSD1306_Puts(char* str, FontDef_t* Font, SSD1306_COLOR_t color) {

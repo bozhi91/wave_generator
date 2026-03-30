@@ -1,3 +1,7 @@
-../Core/Src/display/display.c:32:6:initOLED	8	static
-../Core/Src/display/display.c:46:6:display_string	40	static
-../Core/Src/display/display.c:59:6:dispay_write	16	static
+../Core/Src/display/display.c:49:6:initOLED	8	static
+../Core/Src/display/display.c:72:6:setFont	16	static
+../Core/Src/display/display.c:76:6:printAt	24	static
+../Core/Src/display/display.c:85:6:print	72	static
+../Core/Src/display/display.c:99:6:clr_row	72	static
+../Core/Src/display/display.c:111:6:clrscr	16	static
+../Core/Src/display/display.c:118:6:dispay_write	16	static

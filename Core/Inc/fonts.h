@@ -42,62 +42,34 @@ extern C {
 #include "string.h"
 
 /**
- * @defgroup LIB_Typedefs
- * @brief    Library Typedefs
- * @{
- */
-
-/**
  * @brief  Font structure used on my LCD libraries
  */
 typedef struct {
 	uint8_t FontWidth;    /*!< Font width in pixels */
 	uint8_t FontHeight;   /*!< Font height in pixels */
-	const uint16_t *data; /*!< Pointer to data font data array */
+	const unsigned char *data; /*!< Pointer to data font data array */
+	size_t size_data;
 } FontDef_t;
 
-/** 
- * @brief  String length and height 
+/**
+ * @brief  String length and height
  */
 typedef struct {
 	uint16_t Length;      /*!< String length in units of pixels */
 	uint16_t Height;      /*!< String height in units of pixels */
 } FONTS_SIZE_t;
 
-/**
- * @}
- */
+extern FontDef_t FONT_ARRAY[];
 
-/**
- * @defgroup FONTS_FontVariables
- * @brief    Library font variables
- * @{
- */
+//15x12
+static unsigned char antena[] = {
 
-/**
- * @brief  7 x 10 pixels font size structure 
- */
-extern FontDef_t Font_7x10;
+  0x7F, 0x00, 0x00, 0x00, 0x1E, 0x00, 0x00, 0x00,
+  0x0C, 0x08, 0x00, 0x0C, 0x0C, 0x0E, 0xFC, 0x0F,
+  0x0C, 0x0E, 0x00, 0x0C, 0x0C, 0x08, 0x00, 0x00,
+  0x1E, 0x00, 0x00, 0x00, 0x7F, 0x00, 0x00, 0x00
+};
 
-/**
- * @brief  11 x 18 pixels font size structure 
- */
-extern FontDef_t Font_11x18;
-
-/**
- * @brief  16 x 26 pixels font size structure 
- */
-extern FontDef_t Font_16x26;
-
-/**
- * @}
- */
- 
-/**
- * @defgroup FONTS_Functions
- * @brief    Library functions
- * @{
- */
 
 /**
  * @brief  Calculates string length and height in units of pixels depending on string and font used
@@ -108,22 +80,9 @@ extern FontDef_t Font_16x26;
  */
 char* FONTS_GetStringSize(char* str, FONTS_SIZE_t* SizeStruct, FontDef_t* Font);
 
-/**
- * @}
- */
- 
-/**
- * @}
- */
- 
-/**
- * @}
- */
-
 /* C++ detection */
 #ifdef __cplusplus
 }
 #endif
 
- 
 #endif

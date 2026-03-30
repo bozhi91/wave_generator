@@ -16,12 +16,11 @@
 	}Menu;
 
 	void menuBrowser(void);
-	void initMenu(Menu* menu_ptr, int menu_size);
+	void initMenu(char* title, Menu* menu_ptr, int menu_size);
+
 	void menu_cfg(void);
 	void menu_set(void);
-	void mainMenu(void);
 	void menuSelect(void);
-
 	void simulation(void);
 
 #endif
