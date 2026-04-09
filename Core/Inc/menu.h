@@ -11,8 +11,7 @@
 	typedef struct{
 		char op_name[15];
 		void (*f_ptr)(void);
-		void (*f_hover)(int param);
-		int param;
+		void (*f_hover)(void);
 	}Menu;
 
 	void menuBrowser(void);

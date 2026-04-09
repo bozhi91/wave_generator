@@ -27,9 +27,18 @@ void mainMenu(void){
 
 	char str[15];
 
+	clrscr();
 	printAt("=MAIN-MENU=", 0, 0);
 	snprintf(str, sizeof str, "Off:%dHz", getCurrentFrequency());
 	printAt(str, 0, 1);
 }
+
+void toggleSimulation(void){
+
+}
+
+
+
+
 
 

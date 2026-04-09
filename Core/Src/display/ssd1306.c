@@ -292,9 +292,12 @@ void SSD1306_DrawPixel(uint16_t x, uint16_t y, SSD1306_COLOR_t color) {
 }
 
 void SSD1306_GotoXY(uint16_t x, uint16_t y) {
+
 	/* Set write pointers */
-	SSD1306.CurrentX = x;
-	SSD1306.CurrentY = y;
+	if(x<SSD1306_WIDTH && y<SSD1306_HEIGHT){
+		SSD1306.CurrentX = x;
+		SSD1306.CurrentY = y;
+	}
 }
 
 char SSD1306_Putc(char ch, FontDef_t* Font, SSD1306_COLOR_t color) {
@@ -343,13 +346,15 @@ void drawBMP(unsigned char startX, unsigned char  startY, unsigned char width, u
   int x = 0, y = 0;
 
   for(int idx = 0; x < width; idx++){
-    for(int i = 0; i<8; i++){
+    for(int i = 0; i<8; i++){ //Split the byte in bits. Draw a pixel for each bit.
 
+      //Draw a single pixel.
       SSD1306_DrawPixel(x + startX, y + startY, (bitmap[idx] >>i) & 1 ? color : bg_color);
       y++;
 
+      //The height of the image is reached. Move to the next row
       if(y == height){
-        if(height%8 == 0){
+        if(height%8 == 0){//The end of the current byte is reached. Move to the next one.
           idx++;
         }
         x++;

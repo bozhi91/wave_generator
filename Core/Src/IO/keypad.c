@@ -20,8 +20,8 @@
 #define KEY_3   (GPIO_B & GPIO_PIN_4)
 #define ENC_SW  (GPIO_B & GPIO_PIN_1)	//Encoder - switch key
 
-#define KEY_UP_DELAY 	50
-#define KEY_DOWN_DELAY  100
+#define KEY_UP_DELAY 	100
+#define KEY_DOWN_DELAY  200
 
 static unsigned char last_key = 0;
 static volatile unsigned char enc_l = 0;

@@ -1,1 +1,2 @@
 ../Core/Src/menu/menu_simulation.c:26:6:mainMenu	24	static
+../Core/Src/menu/menu_simulation.c:36:6:toggleSimulation	4	static

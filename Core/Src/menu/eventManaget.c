@@ -22,7 +22,7 @@ Event eventList[] = {
 };
 
 //This states are set manually by the user by pressing a button or when another event is triggered
-State_Manager stateList[] = {
+State_Manager STATE_LIST_TABLE[] = {
 
 	//Current St |  New State    |  Trigger | New Event
 	{ MAIN_MENU,    PLAY_STATE, 	isKey_1,  outputSignal }, //START SIGNAL GENERATOR
@@ -53,17 +53,22 @@ void menuInit(void){
 	mainMenu();
 }
 
+//Set a new state for the state machine
 void setState(DeviceStates state){
 	c_state = state;
 }
 
+//Get the current state of the state machine
 DeviceStates getState(void){
 	return c_state;
 }
 
+/** Go through the states table and execute the function from the current state.
+ *  Also, we check
+ * */
 void eventManager(void){
 
-  int state_size = sizeof(stateList)/sizeof(stateList[0]);
+  int state_size = sizeof(STATE_LIST_TABLE)/sizeof(STATE_LIST_TABLE[0]);
   int event_size = sizeof(eventList)/sizeof(eventList[0]);
 
   //Call the events automatically after a certain timeout
@@ -89,12 +94,12 @@ void eventManager(void){
   for(int i=0; i<state_size; i++){
 
 	 //The current state is located in the state table and the trigger is activated
-	 if(stateList[i].state == c_state && stateList[i].trigger() == 1 ){
+	 if(STATE_LIST_TABLE[i].state == c_state && STATE_LIST_TABLE[i].trigger() == 1 ){
 
 		 //Set the new state and call the function
-		 c_state = stateList[i].new_state;
-		 if(stateList[i].ev_ptr != 0){
-			 stateList[i].ev_ptr();
+		 c_state = STATE_LIST_TABLE[i].new_state;
+		 if(STATE_LIST_TABLE[i].ev_ptr != 0){
+			 STATE_LIST_TABLE[i].ev_ptr();
 			 break;
 		 }
 	 }

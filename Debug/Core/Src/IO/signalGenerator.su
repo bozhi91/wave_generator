@@ -1,7 +1,7 @@
 ../Core/Src/IO/signalGenerator.c:35:6:initSignalGen	8	static
-../Core/Src/IO/signalGenerator.c:49:14:getCurrentFrequency	16	static
-../Core/Src/IO/signalGenerator.c:65:6:updateFrequency	8	static
-../Core/Src/IO/signalGenerator.c:74:6:dispCurrentFreq	40	static
-../Core/Src/IO/signalGenerator.c:87:6:outputSignal	8	static
+../Core/Src/IO/signalGenerator.c:45:14:getCurrentFrequency	16	static
+../Core/Src/IO/signalGenerator.c:61:6:updateFrequency	8	static
+../Core/Src/IO/signalGenerator.c:73:6:dispCurrentFreq	40	static
+../Core/Src/IO/signalGenerator.c:85:6:outputSignal	8	static
 ../Core/Src/IO/signalGenerator.c:112:13:GenerateSineTable	16	static
 ../Core/Src/IO/signalGenerator.c:138:13:genTriangleWave	16	static

@@ -59,8 +59,6 @@ void initMenu(char* title, Menu *menu_ptr, int size){
 	menu_size  = size;
 
 	strcpy(menuTitle, title);
-	printAt(title, 0, 0);
-
 	memset(menu_table, 0,  sizeof(menu_table));
 	memcpy(menu_table, menu_ptr, sizeof(Menu)*size);
 	menuBrowser();
@@ -75,27 +73,28 @@ void initMenu(char* title, Menu *menu_ptr, int size){
  * */
 void menuBrowser(void){
 
+	//The end of the menu is reached. Restart the menu index and show the first option
 	if(menu_index == menu_size){
 		menu_index = 0;
 	}
 
-	if(submenu_selected == 1){
-		printAt(menuTitle, 0, 0);
-		submenu_selected = 0;
-	}
+	//Before switching to the next menu option and displaying its parameters,
+	clrscr();
+	printAt(menuTitle, 0, 0);
 
 	//Display the menu option label
-	printAt(menu_table[menu_index].op_name,0,1);
+	printAt(menu_table[menu_index].op_name, 0, 1);
 
-	//It the hover function is set, call it.
+	//Display the sub menu or the parameters of the current menu option
 	if(menu_table[menu_index].f_hover != 0){
-		menu_table[menu_index].f_hover(menu_table[menu_index].param);
+		menu_table[menu_index].f_hover();
 	}
 	menu_index++;
 }
 
-/** Enter/select the current menu option displayed on the screen.
- *  - By pressing key 3, you open the submenu.
+/** Select the current menu option displayed on the screen.
+ *  - By pressing key 3, you open the sub-menu which can either allows you to see more options
+ *    or change the parameters of the current option.
  *
  * */
 void menuSelect(void){

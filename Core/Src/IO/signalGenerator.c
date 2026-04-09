@@ -37,15 +37,11 @@ void initSignalGen(void){
 	//StartPWM(500, 50);
 	//genTrianbleWave();
 	//DAC_Write(2048);//12bits DAC - 0:4095
-
 	GenerateSineTable();
 	startDAC(sine_table, N_SAMPLES, 1000);
 }
 
-/*
- *  Read the encoder and return its value as a positive (in KHz)
- *
- *  */
+/*Read the encoder and return its value in Hz */
 unsigned int getCurrentFrequency(void){
 
 	unsigned int enc_data = getEncoderVal();
@@ -71,6 +67,9 @@ void updateFrequency(void){
 	}
 }
 
+/* Display the current frequency selected by the encoder.
+ * This will force display the frequency no matter its current value.
+ * */
 void dispCurrentFreq(void){
 
 	char str[15];
@@ -83,10 +82,9 @@ void dispCurrentFreq(void){
  * is send to the output pin with a frequency defined by the rotary encoder.
  * The current frequency will be shown on the display.
  * */
-
 void outputSignal(void){
 
-	if(simulation_state==0){
+	if(simulation_state == 0){
 
 		simulation_state = 1;
 
@@ -102,6 +100,8 @@ void outputSignal(void){
 		toggleDAC(0);
 	}
 }
+
+/******************************* The signal functions are defined below ***********************************/
 
 /** Three types of wave might be generated:
  * - A pure sine wave

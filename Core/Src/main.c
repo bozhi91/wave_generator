@@ -131,14 +131,6 @@ int main(void){
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-/*
-  void drawMonochromeBitmap(
-  		unsigned char startX, unsigned char  startY,
-  		unsigned char width, unsigned char  height,
-  		const unsigned char* bitmap, int nBytes,
-  		unsigned char color, unsigned short bg_color);*/
-
-
   while(1){
 
 	kbdDriver();

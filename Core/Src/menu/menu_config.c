@@ -16,31 +16,32 @@
 #include "signalGen.h"
 
 static void about(void);
-static void set_func(void);
-static void set_wave(void);
-static void hover_func(int param);
-static void set_burst(void);
+static void set_func_type(void);
+static void set_wave_type(void);
+static void set_burst_type(void);
+
+static void show_func_type(void);
+static void show_wave_type(void);
+static void show_burst_type(void);
 
 static unsigned char func_type   = 0;
 static unsigned char wave_type   = 0;
 static unsigned char burst_type  = 0;
 static unsigned char burst_value = 0;
 
-static char *func_array[] = {
-		"Sine",
-		"Square",
-		"Triangle",
-		"SawTooth"
-};
+char *func_array[]  = { "Sine","Square","Triangle","SawTooth" };
+char *burst_array[] = { "None", "Time", "Pulse" };
+char *wave_array[]  = { "NORMAL","FULL-Rect", "HALF-RECT" };
+
 
 void menu_cfg(void){
 
 	Menu menu_cfg[] = {
 
-			{ "Func" , set_func , hover_func, 1 },
-			{ "Wave" , set_wave , hover_func, 2 },
-			{ "Burst", set_burst, hover_func, 3 },
-			{ "About", about,     0}
+			{ "Func" , set_func_type , show_func_type  },
+			{ "Wave" , set_wave_type , show_wave_type  },
+			{ "Burst", set_burst_type, show_burst_type },
+			{ "About", about,     0, 0 }
 	};
 
 	initMenu("=MENU CONF=", menu_cfg, sizeof(menu_cfg) / sizeof(menu_cfg[0]) );
@@ -48,76 +49,90 @@ void menu_cfg(void){
 
 static void about(void){
 
-	printAt("(C)Bozhidar",0,0);
-	printAt("03/2026",0,1);
+	printAt("(C)Bozhidar",0, 0);
+	printAt("03/2026", 0, 1);
+	printAt("Ver:1.0", 0, 2);
 }
 
-static void set_func(void){
+/** Select the function type.
+ *  So far, we have: Square wave, Sine wave, Triangle wave, Saw-tooth wave.
+ *  However, we can define much more funcitons
+ * */
+static void set_func_type(void){
 
-	static int index = 1;
-	char str[15];
-	int menu_size = sizeof(func_array) / sizeof(func_array[0]);
+	int list_size = sizeof(func_array) / sizeof(func_array[0]);
 
-	index++;
-	if(index == menu_size){
-		index = 0;
+	func_type++;
+	if(func_type == list_size){
+		func_type = 0;
 	}
-	func_type = index;
 
-	snprintf(str, sizeof str, "Func:%s", func_array[func_type]);
-	print(str);
+	show_func_type();
 }
 
-static void set_wave(void){
+/**
+ * Select the wave type: NORMAL, HALF-RECTIFIED, FULL RECTIFIED
+ * */
+static void set_wave_type(void){
 
-	static int index   = 1;
-	char *wave_array[] = {
-			"FULL-Rect",
-			"HALF-RECT",
-			"NORMAL",
-	};
-	char str[15];
-    int menu_size = sizeof(wave_array) / sizeof(wave_array[0]);
+    int list_size = sizeof(wave_array) / sizeof(wave_array[0]);
 
-	snprintf(str, sizeof str, "Wave:%s", wave_array[index]);
-	print(str);
-
-	wave_type = index;
-	index++;
-	if(index == menu_size){
-		index = 0;
+    wave_type++;
+	if(wave_type == list_size){
+		wave_type = 0;
 	}
+
+	show_wave_type();
 }
 
-static void set_burst(void){
+/**
+ * Set the duration/number of the pulses.
+ * - For example, a 10s burst will generate pulses of a certain frequency during 10 seconds.
+ *   After that, the generator will stop automatically.
+ *
+ *  - A burst of 10 pulses, will generate 10 pulses at the given frequency.
+ *  - If no burst mode is selected, then a continuous signal will be generated until its interrupted by the user.
+ * */
+static void set_burst_type(void){
 
-	static int index    = 1;
-	char *burst_array[] = {
-			"None",
-			"Time",
-			"Pulse",
-	};
-	char str[15];
-    int menu_size = sizeof(burst_array) / sizeof(burst_array[0]);
+    int list_size = sizeof(burst_array) / sizeof(burst_array[0]);
 
-	snprintf(str, sizeof str, "Burst:%s", burst_array[index]);
-	print(str);
-
-	burst_type = index;
-	index++;
-	if(index == menu_size){
-		index = 0;
+    burst_type++;
+	if(burst_type == list_size){
+		burst_type = 0;
 	}
+
+	show_burst_type();
 }
 
-static void hover_func(int param){
+//Show the current wave type
+static void show_wave_type(void){
 
-	char str[15];
+	char str[20];
 
-	if(param == 1){
-		//todo: print the submenu text on a new line
-		//Let the menu label remain visible
-		snprintf(str, sizeof str, "Func:%s", func_array[func_type]);
-		print(str);
-	}
+	snprintf(str, sizeof str, "WAVE:%s", wave_array[wave_type]);
+	printAt(str,0,1);
 }
+
+//Show the current burst type
+static void show_burst_type(void){
+
+	char str[20];
+
+	burst_value = 10;
+	snprintf(str, sizeof str, "BURST:%s", burst_array[burst_type]);
+	printAt(str, 0, 1);
+
+	snprintf(str, sizeof str, "Val:%d%s",burst_value, burst_type==1 ? "(s)" : " ");
+	printAt(str, 0, 2);
+}
+
+//Show the current function type: sine, square, triangle
+static void show_func_type(void){
+
+	char str[20];
+
+	snprintf(str, sizeof str, "FUNC:%s", func_array[func_type]);
+	printAt(str, 0, 1);
+}
+

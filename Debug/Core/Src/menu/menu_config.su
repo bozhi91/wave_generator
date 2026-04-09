@@ -1,6 +1,8 @@
-../Core/Src/menu/menu_config.c:36:6:menu_cfg	120	static
-../Core/Src/menu/menu_config.c:49:13:about	8	static
-../Core/Src/menu/menu_config.c:55:13:set_func	32	static
-../Core/Src/menu/menu_config.c:71:13:set_wave	40	static
-../Core/Src/menu/menu_config.c:92:13:set_burst	40	static
-../Core/Src/menu/menu_config.c:113:13:hover_func	32	static
+../Core/Src/menu/menu_config.c:37:6:menu_cfg	104	static
+../Core/Src/menu/menu_config.c:50:13:about	8	static
+../Core/Src/menu/menu_config.c:61:13:set_func_type	16	static
+../Core/Src/menu/menu_config.c:76:13:set_wave_type	16	static
+../Core/Src/menu/menu_config.c:96:13:set_burst_type	16	static
+../Core/Src/menu/menu_config.c:109:13:show_wave_type	32	static
+../Core/Src/menu/menu_config.c:118:13:show_burst_type	40	static
+../Core/Src/menu/menu_config.c:131:13:show_func_type	32	static
