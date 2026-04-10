@@ -23,6 +23,12 @@
 	unsigned char isKeyPressed(int id);
 	short getEncoderVal(void);
 	void setEncoderVal(short value);
+
+	char isEncoderEnabled(void);
 	void enableEncoder(char status);
+
+	short getEncoderLastVal(void);
+	void storeEncoderLastVal(void);
+
 
 #endif /* INC_IO_H_ */

@@ -15,7 +15,7 @@
 "./Core/Src/display/fonts.o"
 "./Core/Src/display/ssd1306.o"
 "./Core/Src/main.o"
-"./Core/Src/menu/eventManaget.o"
+"./Core/Src/menu/eventManager.o"
 "./Core/Src/menu/menu.o"
 "./Core/Src/menu/menu_config.o"
 "./Core/Src/menu/menu_simulation.o"

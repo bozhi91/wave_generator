@@ -9,7 +9,9 @@
 #include <string.h>
 #include <math.h>
 
+
 #include "signalGen.h"
+#include "menu_simulation.h"
 #include "dac.h"
 #include "pwm.h"
 #include "display.h"
@@ -31,6 +33,10 @@ uint16_t sine_table[N_SAMPLES];
 
 //DAC_Write(2047); // Send a constant impulse of 2048(out of 4095) to the DAC chanel
 static unsigned char simulation_state = 0;
+
+unsigned char getSimulationState(void){
+	return simulation_state;
+}
 
 void initSignalGen(void){
 
@@ -55,34 +61,11 @@ unsigned int getCurrentFrequency(void){
 }
 
 /**
- * Reads the frequency and display it on the screen.
- * The value will be displayed only if the encoder is rotated.
- * */
-void updateFrequency(void){
-
-	static unsigned int freq = 0xffff;
-	if(freq != getCurrentFrequency()){
-		freq = getCurrentFrequency();
-		dispCurrentFreq();
-	}
-}
-
-/* Display the current frequency selected by the encoder.
- * This will force display the frequency no matter its current value.
- * */
-void dispCurrentFreq(void){
-
-	char str[15];
-	snprintf(str, sizeof str, "%s:%dHz", simulation_state?"ON":"OFF", getCurrentFrequency());
-	printAt(str,0,1);
-}
-
-/**
  * Toggle the DAC channel. When the channel is ON, a sine wave signal(or another type)
  * is send to the output pin with a frequency defined by the rotary encoder.
  * The current frequency will be shown on the display.
  * */
-void outputSignal(void){
+void toggleSignalGenerator(void){
 
 	if(simulation_state == 0){
 

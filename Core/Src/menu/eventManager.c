@@ -10,6 +10,7 @@
 #include "main.h"
 #include "menu.h"
 #include "menu_simulation.h"
+#include "menu_config.h"
 #include "io.h"
 #include "display.h"
 #include "signalGen.h"
@@ -18,15 +19,17 @@ static unsigned char c_state = MAIN_MENU;
 
 //These events will run automatically by the event manager
 Event eventList[] = {
-	{ MAIN_MENU,	updateFrequency, 100,  0 },
+
+	{ MAIN_MENU,   updateFrequency, 100,  0 },
+	{ CONFIG_MENU, updateBurst,     100,  0 },
 };
 
 //This states are set manually by the user by pressing a button or when another event is triggered
 State_Manager STATE_LIST_TABLE[] = {
 
 	//Current St |  New State    |  Trigger | New Event
-	{ MAIN_MENU,    PLAY_STATE, 	isKey_1,  outputSignal }, //START SIGNAL GENERATOR
-	{ PLAY_STATE,   MAIN_MENU,  	isKey_1,  outputSignal }, //STOP  SIGNAL GENERATOR
+	{ MAIN_MENU,    PLAY_STATE, 	isKey_1,  toggleSignalGenerator }, //START SIGNAL GENERATOR
+	{ PLAY_STATE,   MAIN_MENU,  	isKey_1,  toggleSignalGenerator }, //STOP  SIGNAL GENERATOR
 
 	{ MAIN_MENU,    CONFIG_MENU, 	isKey_2,  menu_cfg    }, //OPEN   CONFIG   MENU
 	{ CONFIG_MENU,  CONFIG_MENU, 	isKey_2,  menuBrowser }, //BROWSE CONFIG   MENU
@@ -36,12 +39,12 @@ State_Manager STATE_LIST_TABLE[] = {
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_3,  menuBrowser }, //BROWSE SETTINGS MENU
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_2,  menuSelect  }, //SELECT SETTINGS MENU
 
-	{ MAIN_MENU,     ST_ENCODER,    isKey_4,  updateFrequency }, //OPEN   ENCODER  MENU
+	{ MAIN_MENU,     ST_ENCODER,    isKey_4,  updateFrequency }, //UPDATE SIGNAL FREQUENCY
 
-	{ ST_ENCODER,     MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
-	{ CONFIG_MENU,    MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
-	{ SETTINGS_MENU,  MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
-	{ ST_SIMULATION,  MAIN_MENU,   	isKey_1,  mainMenu    }, //GO BACK TO MAIN MENU
+	{ ST_ENCODER,     MAIN_MENU,   	isKey_1,  simulationMenu    }, //GO BACK TO MAIN MENU
+	{ CONFIG_MENU,    MAIN_MENU,   	isKey_1,  simulationMenu    }, //GO BACK TO MAIN MENU
+	{ SETTINGS_MENU,  MAIN_MENU,   	isKey_1,  simulationMenu    }, //GO BACK TO MAIN MENU
+	{ ST_SIMULATION,  MAIN_MENU,   	isKey_1,  simulationMenu    }, //GO BACK TO MAIN MENU
 
 };
 
@@ -50,7 +53,7 @@ void menuInit(void){
 	c_state = MAIN_MENU;
 	setEncoderVal(1);
 	resetKey();
-	mainMenu();
+	simulationMenu();
 }
 
 //Set a new state for the state machine

@@ -1,4 +1,0 @@
-../Core/Src/menu/eventManaget.c:48:6:menuInit	8	static
-../Core/Src/menu/eventManaget.c:57:6:setState	16	static
-../Core/Src/menu/eventManaget.c:62:14:getState	4	static
-../Core/Src/menu/eventManaget.c:69:6:eventManager	24	static

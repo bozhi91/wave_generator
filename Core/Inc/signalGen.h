@@ -15,9 +15,8 @@
 #define STEP       M_PI*2.0f/360.0f*3.0f
 
 void initSignalGen(void);
-void outputSignal(void);
-void dispCurrentFreq(void);
-void updateFrequency(void);
+void toggleSignalGenerator(void);
 unsigned int getCurrentFrequency(void);
+unsigned char getSimulationState(void);
 
 #endif /* INC_SIGNALGEN_H_ */

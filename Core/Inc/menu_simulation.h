@@ -8,6 +8,8 @@
 #ifndef INC_MENU_SIMULATION_H_
 #define INC_MENU_SIMULATION_H_
 
-	void mainMenu(void);
+	void simulationMenu(void);
+	void dispCurrentFreq(void);
+	void updateFrequency(void);
 
 #endif /* INC_MENU_SIMULATION_H_ */

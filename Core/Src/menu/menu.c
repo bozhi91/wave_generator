@@ -18,7 +18,6 @@
 
 static int menu_index = 0;
 static int menu_size  = 0;
-static char submenu_selected = 1;
 
 void op1(void);
 void op2(void);
@@ -57,6 +56,8 @@ void initMenu(char* title, Menu *menu_ptr, int size){
 
 	menu_index = 0;
 	menu_size  = size;
+
+	storeEncoderLastVal();
 
 	strcpy(menuTitle, title);
 	memset(menu_table, 0,  sizeof(menu_table));
@@ -101,7 +102,10 @@ void menuSelect(void){
 
 	int tmp_index = (menu_index == 0) ? (menu_size-1) : menu_index-1;
 	menu_table[tmp_index].f_ptr();
-	submenu_selected = 1;
+}
+
+int getMenuIntex(void){
+	return menu_index;
 }
 
 //EXAMPLE FUNCTIONS. YOU CAN DELETE THEM
@@ -115,7 +119,7 @@ void menu_set(void){
 			{ "SET 3",       op3, 0 }
 	};
 
-	initMenu("Animation",menu_set, sizeof(menu_set) / sizeof(menu_set[0]) );
+	initMenu("=SETTINGS=",menu_set, sizeof(menu_set) / sizeof(menu_set[0]) );
 }
 
 void anim_1(void){

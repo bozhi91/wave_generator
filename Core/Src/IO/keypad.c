@@ -29,11 +29,20 @@ static volatile unsigned char enc_r = 0;
 
 uint8_t read_buttons(void);
 
-static short encode_count = 0;
+static short encode_count       = 0;
 static unsigned char encode_dir = 0;
+static short encoder_last_val   = 0;
+static char encoder_state 		= 0;
 
+/* Toggle the encoder.
+ * If enabled, the encoder values are updated while rotating.
+ * Otherwise, the values won't be updated.
+ *
+ * The encoder state is controlled from the Timer register(TIM2)
+ * */
 void enableEncoder(char status){
 
+	encoder_state = status;
 	if(status == 1){
 		HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
 	}
@@ -42,19 +51,45 @@ void enableEncoder(char status){
 	}
 }
 
+char isEncoderEnabled(void){
+	return encoder_state;
+}
+
+/* Get the encoder rotating direction.
+ *
+ * @Returns:
+ * 	 --> 'r' for right
+ * 	 --> 'l' for left
+ * */
 unsigned char getEncoerDir(void){
 	return encode_dir;
 }
 
+/* Set the RAW encoder value. */
 void setEncoderVal(short value){
 	encode_count = value;
-	__HAL_TIM_SET_COUNTER(getTimInst(2), value);
+	__HAL_TIM_SET_COUNTER(getTimInst(2), -4*value);
 }
 
+/** Get the RAW encoder value **/
 short getEncoderVal(void){
 	return encode_count;
 }
 
+short getEncoderLastVal(void){
+	return encoder_last_val;
+}
+
+//Store the current encoder value and reset the encoder
+void storeEncoderLastVal(void){
+	encoder_last_val = encode_count;
+	//setEncoderVal(0);
+}
+
+/* Read the encoder data.
+ * This will update the current encoder values such as: encoder_counter and direction.
+ * For now only a positive values are allowed.
+ * */
 void readEncoderData(void){
 
 	//Get the encoder direction - left or right
@@ -66,7 +101,7 @@ void readEncoderData(void){
 	encode_count*=-1;
 
 	//Allow positive values only!
-	if(encode_count<0){
+	if(encode_count < 0){
 		encode_count = 0;
 		__HAL_TIM_SET_COUNTER(getTimInst(2), 0);
 	}

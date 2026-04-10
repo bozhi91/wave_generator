@@ -1,6 +1,6 @@
 Core/Src/IO/signalGenerator.o: ../Core/Src/IO/signalGenerator.c \
- ../Core/Inc/signalGen.h ../Core/Inc/dac.h ../Core/Inc/main.h \
- ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
+ ../Core/Inc/signalGen.h ../Core/Inc/menu_simulation.h ../Core/Inc/dac.h \
+ ../Core/Inc/main.h ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
  ../Core/Inc/stm32f3xx_hal_conf.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h \
@@ -32,6 +32,7 @@ Core/Src/IO/signalGenerator.o: ../Core/Src/IO/signalGenerator.c \
  ../Core/Inc/pwm.h ../Core/Inc/display.h ../Core/Inc/io.h \
  ../Core/Inc/tim.h
 ../Core/Inc/signalGen.h:
+../Core/Inc/menu_simulation.h:
 ../Core/Inc/dac.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:

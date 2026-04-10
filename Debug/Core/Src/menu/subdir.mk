@@ -5,19 +5,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/menu/eventManaget.c \
+../Core/Src/menu/eventManager.c \
 ../Core/Src/menu/menu.c \
 ../Core/Src/menu/menu_config.c \
 ../Core/Src/menu/menu_simulation.c 
 
 OBJS += \
-./Core/Src/menu/eventManaget.o \
+./Core/Src/menu/eventManager.o \
 ./Core/Src/menu/menu.o \
 ./Core/Src/menu/menu_config.o \
 ./Core/Src/menu/menu_simulation.o 
 
 C_DEPS += \
-./Core/Src/menu/eventManaget.d \
+./Core/Src/menu/eventManager.d \
 ./Core/Src/menu/menu.d \
 ./Core/Src/menu/menu_config.d \
 ./Core/Src/menu/menu_simulation.d 
@@ -30,7 +30,7 @@ Core/Src/menu/%.o Core/Src/menu/%.su: ../Core/Src/menu/%.c Core/Src/menu/subdir.
 clean: clean-Core-2f-Src-2f-menu
 
 clean-Core-2f-Src-2f-menu:
-	-$(RM) ./Core/Src/menu/eventManaget.d ./Core/Src/menu/eventManaget.o ./Core/Src/menu/eventManaget.su ./Core/Src/menu/menu.d ./Core/Src/menu/menu.o ./Core/Src/menu/menu.su ./Core/Src/menu/menu_config.d ./Core/Src/menu/menu_config.o ./Core/Src/menu/menu_config.su ./Core/Src/menu/menu_simulation.d ./Core/Src/menu/menu_simulation.o ./Core/Src/menu/menu_simulation.su
+	-$(RM) ./Core/Src/menu/eventManager.d ./Core/Src/menu/eventManager.o ./Core/Src/menu/eventManager.su ./Core/Src/menu/menu.d ./Core/Src/menu/menu.o ./Core/Src/menu/menu.su ./Core/Src/menu/menu_config.d ./Core/Src/menu/menu_config.o ./Core/Src/menu/menu_config.su ./Core/Src/menu/menu_simulation.d ./Core/Src/menu/menu_simulation.o ./Core/Src/menu/menu_simulation.su
 
 .PHONY: clean-Core-2f-Src-2f-menu
 

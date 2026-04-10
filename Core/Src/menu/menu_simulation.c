@@ -10,11 +10,14 @@
 
 #include "menu.h"
 #include "menu_simulation.h"
+#include "signalGen.h"
 #include "main.h"
 #include "io.h"
 #include "display.h"
 #include "eventManager.h"
 #include "signalGen.h"
+
+static unsigned int current_frequency = 1000;
 
 /**
 * Display the simulator parameters and status:
@@ -23,22 +26,60 @@
 * - Type: Full
 * - Burst: None
 **/
-void mainMenu(void){
+void simulationMenu(void){
 
 	char str[15];
 
+	//Store the last encoder readings for the previous menu
+	storeEncoderLastVal();
+
+	//Set the new encoder value as the last known frequency
+	setEncoderVal(current_frequency/1000);
+
+	enableEncoder(1);
+
 	clrscr();
-	printAt("=MAIN-MENU=", 0, 0);
-	snprintf(str, sizeof str, "Off:%dHz", getCurrentFrequency());
+	printAt(" =MAIN-MENU=", 0, 0);
+	snprintf(str, sizeof str, "Off:%dHz", current_frequency);
 	printAt(str, 0, 1);
 }
 
+//Start/stop simulation.Display the corresponding data on screen.
+//Call the necessary function from the signalGenerator.c in order to start/stop or configure
 void toggleSimulation(void){
 
+	/** TODO:
+	 *
+	 * 1) Display simulation data
+	 * 2) Toggle the simulation -> call the toggleSignalGenerator() from signalGenerator.c
+	 *
+	**/
+
+	//toggleSignalGenerator();
 }
 
+/* Display the current frequency selected by the encoder.
+ * This will force to display the frequency no matter its current value.
+ *
+ * NOTE: The frequency is updated by reading directly the encoder value.
+ * */
+void dispCurrentFreq(void){
 
+	char str[15];
+	snprintf(str, sizeof str, "%s:%dHz", getSimulationState() ? "ON" : "OFF", getCurrentFrequency());
+	printAt(str, 0, 1);
+}
 
+/**
+ * Reads the frequency and display it on the screen.
+ * The value will be displayed only if the encoder is rotated.
+ * */
+void updateFrequency(void){
 
+	if(current_frequency != getCurrentFrequency()){
+		current_frequency = getCurrentFrequency();
+		dispCurrentFreq();
+	}
+}
 
 

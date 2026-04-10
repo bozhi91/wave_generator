@@ -23,17 +23,20 @@ static void set_burst_type(void);
 static void show_func_type(void);
 static void show_wave_type(void);
 static void show_burst_type(void);
+static void displayBurstValue(int burst);
 
 static unsigned char func_type   = 0;
 static unsigned char wave_type   = 0;
 static unsigned char burst_type  = 0;
-static unsigned char burst_value = 0;
+static unsigned char burst_value = 5; //5 seconds of burst duration
 
 char *func_array[]  = { "Sine","Square","Triangle","SawTooth" };
-char *burst_array[] = { "None", "Time", "Pulse" };
-char *wave_array[]  = { "NORMAL","FULL-Rect", "HALF-RECT" };
+char *burst_array[] = { "None", "Time", "Pulse" 			  };
+char *wave_array[]  = { "NORMAL","FULL-Rect", "HALF-RECT"     };
 
-
+/** Initialize the config menu
+ *
+ * */
 void menu_cfg(void){
 
 	Menu menu_cfg[] = {
@@ -41,10 +44,60 @@ void menu_cfg(void){
 			{ "Func" , set_func_type , show_func_type  },
 			{ "Wave" , set_wave_type , show_wave_type  },
 			{ "Burst", set_burst_type, show_burst_type },
-			{ "About", about,     0, 0 }
+			{ "About", about,          0			   }
 	};
 
-	initMenu("=MENU CONF=", menu_cfg, sizeof(menu_cfg) / sizeof(menu_cfg[0]) );
+	initMenu("=MENU CONFIG=", menu_cfg, sizeof(menu_cfg) / sizeof(menu_cfg[0]) );
+
+	enableEncoder(0);
+
+	//Store the last encoder readings for the previous menu
+	storeEncoderLastVal();
+
+	//Set the new encoder value as the last known frequency
+	setEncoderVal(burst_value);
+}
+
+
+/**
+ * Update burst value automatically when the encoder is rotated.
+ * The current encoder value is displayed on the screen once
+ * This function is called from the state machine.
+ * */
+void updateBurst(void){
+
+	static unsigned int burst = 0xffff;
+	burst_value = getEncoderVal();
+
+	if(burst_value == 0){
+		burst_value++;
+	}
+
+	//Enable the encoder only for the burst menu
+	if(getMenuIntex() == 3 && !isEncoderEnabled()){
+		enableEncoder(1);
+	}
+	else if(getMenuIntex() != 3 && isEncoderEnabled()){
+		enableEncoder(0);
+	}
+
+	//If the encoder is rotated and the current option is burst type,
+	//update the burst value and display it on the screen
+	if(burst != burst_value && getMenuIntex() == 3){
+		burst = burst_value;
+		displayBurstValue(burst);
+	}
+}
+
+/**
+ * Force update the current burst value
+ * */
+static void displayBurstValue(int burst){
+
+	char str[15];
+
+	snprintf(str, sizeof str, "Val:%d%s",burst_value, burst_type==1 ? "(s)" : "(PULSES)");
+	printAt(str, 0, 2);
 }
 
 static void about(void){
@@ -119,12 +172,9 @@ static void show_burst_type(void){
 
 	char str[20];
 
-	burst_value = 10;
 	snprintf(str, sizeof str, "BURST:%s", burst_array[burst_type]);
 	printAt(str, 0, 1);
-
-	snprintf(str, sizeof str, "Val:%d%s",burst_value, burst_type==1 ? "(s)" : " ");
-	printAt(str, 0, 2);
+	displayBurstValue(burst_value);
 }
 
 //Show the current function type: sine, square, triangle
