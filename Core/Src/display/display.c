@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#define MAX_ROW_SIZE 50
-#define LINE_SPACING 4
+#define MAX_ROW_SIZE  50
+#define LINE_SPACING  4
 
 void displaySplash(void);
 
@@ -74,7 +74,6 @@ void displaySplash(void){
 	//drawBMP(bmp_pos, 0, 69, 40, splash, 1, 0);
 	drawBMP(30, 10, 15, 15, logo, 1, 0);
 	SSD1306_UpdateScreen();
-	//printAt("ST-ELECTRONIK",1 ,3);
 }
 
 void setFont(int font_id){
@@ -83,8 +82,8 @@ void setFont(int font_id){
 
 void printAt(const char* str, int x, int y){
 
-	cursor_x = x * cFont.FontWidth;
-	cursor_y = y * (cFont.FontHeight + LINE_SPACING);
+	cursor_x = x * (cFont.FontWidth );
+	cursor_y = y * (cFont.FontHeight + LINE_SPACING );
 
 	SSD1306_GotoXY(cursor_x, cursor_y);
 	print(str);
@@ -98,13 +97,13 @@ void print(const char* str){
 		buff[i] = toupper(str[i]);
 	}
 
-	clr_row(cursor_y);
+	clr_row(cursor_y, 0);
 	SSD1306_GotoXY(cursor_x, cursor_y);
 	SSD1306_Puts(buff, &cFont, 1);
 	SSD1306_UpdateScreen();
 }
 
-void clr_row(int row){
+void clr_row(int row, char upd){
 
 	char row_buff[MAX_ROW_SIZE] = { 0 };
 	int row_size = chars_per_row < (sizeof (row_buff)) ? chars_per_row : (sizeof row_buff);
@@ -114,12 +113,15 @@ void clr_row(int row){
 	SSD1306_GotoXY(0, row);
 	SSD1306_Puts((char*)row_buff, &cFont, 1);
 
+	if(upd){
+		SSD1306_UpdateScreen();
+	}
 }
 
 void clrscr(void){
 
 	for(int i=0;i<4;i++){
-		clr_row(i);
+		clr_row(i, 0);
 	}
 	SSD1306_UpdateScreen();
 }

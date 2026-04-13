@@ -3,10 +3,10 @@
 ../Core/Src/menu/menu.c:39:6:op3	8	static
 ../Core/Src/menu/menu.c:55:6:initMenu	24	static
 ../Core/Src/menu/menu.c:75:6:menuBrowser	8	static
-../Core/Src/menu/menu.c:101:6:menuSelect	16	static
-../Core/Src/menu/menu.c:107:5:getMenuIntex	4	static
-../Core/Src/menu/menu.c:113:6:menu_set	80	static
-../Core/Src/menu/menu.c:125:6:anim_1	24	static
-../Core/Src/menu/menu.c:136:6:anim_2	24	static
-../Core/Src/menu/menu.c:147:6:simulation	8	static
-../Core/Src/menu/menu.c:157:6:stop	8	static
+../Core/Src/menu/menu.c:101:6:menuSelect	8	static
+../Core/Src/menu/menu.c:105:5:getMenuIndex	4	static
+../Core/Src/menu/menu.c:111:6:menu_set	80	static
+../Core/Src/menu/menu.c:123:6:anim_1	24	static
+../Core/Src/menu/menu.c:134:6:anim_2	24	static
+../Core/Src/menu/menu.c:145:6:simulation	8	static
+../Core/Src/menu/menu.c:155:6:stop	8	static

@@ -1,5 +1,6 @@
 Core/Src/menu/menu_config.o: ../Core/Src/menu/menu_config.c \
- ../Core/Inc/menu.h ../Core/Inc/menu_simulation.h ../Core/Inc/main.h \
+ ../Core/Inc/menu_config.h ../Core/Inc/menu.h \
+ ../Core/Inc/menu_simulation.h ../Core/Inc/main.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
  ../Core/Inc/stm32f3xx_hal_conf.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h \
@@ -31,6 +32,7 @@ Core/Src/menu/menu_config.o: ../Core/Src/menu/menu_config.c \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h \
  ../Core/Inc/io.h ../Core/Inc/display.h ../Core/Inc/eventManager.h \
  ../Core/Inc/signalGen.h
+../Core/Inc/menu_config.h:
 ../Core/Inc/menu.h:
 ../Core/Inc/menu_simulation.h:
 ../Core/Inc/main.h:

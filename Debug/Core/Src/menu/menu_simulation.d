@@ -1,6 +1,7 @@
 Core/Src/menu/menu_simulation.o: ../Core/Src/menu/menu_simulation.c \
- ../Core/Inc/menu.h ../Core/Inc/menu_simulation.h ../Core/Inc/signalGen.h \
- ../Core/Inc/main.h ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
+ ../Core/Inc/menu_config.h ../Core/Inc/menu.h \
+ ../Core/Inc/menu_simulation.h ../Core/Inc/signalGen.h ../Core/Inc/main.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h \
  ../Core/Inc/stm32f3xx_hal_conf.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_rcc.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_def.h \
@@ -30,6 +31,7 @@ Core/Src/menu/menu_simulation.o: ../Core/Src/menu/menu_simulation.c \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h \
  ../Core/Inc/io.h ../Core/Inc/display.h ../Core/Inc/eventManager.h
+../Core/Inc/menu_config.h:
 ../Core/Inc/menu.h:
 ../Core/Inc/menu_simulation.h:
 ../Core/Inc/signalGen.h:

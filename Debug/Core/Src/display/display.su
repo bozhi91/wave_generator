@@ -1,8 +1,8 @@
 ../Core/Src/display/display.c:51:6:initOLED	8	static
 ../Core/Src/display/display.c:66:6:displaySplash	32	static
-../Core/Src/display/display.c:80:6:setFont	16	static
-../Core/Src/display/display.c:84:6:printAt	24	static
-../Core/Src/display/display.c:93:6:print	72	static
-../Core/Src/display/display.c:107:6:clr_row	72	static
-../Core/Src/display/display.c:119:6:clrscr	16	static
-../Core/Src/display/display.c:127:6:dispay_write	16	static
+../Core/Src/display/display.c:79:6:setFont	16	static
+../Core/Src/display/display.c:83:6:printAt	24	static
+../Core/Src/display/display.c:92:6:print	72	static
+../Core/Src/display/display.c:106:6:clr_row	72	static
+../Core/Src/display/display.c:121:6:clrscr	16	static
+../Core/Src/display/display.c:129:6:dispay_write	16	static

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "menu_config.h"
 #include "menu.h"
 #include "menu_simulation.h"
 #include "main.h"
@@ -24,30 +25,40 @@ static void show_func_type(void);
 static void show_wave_type(void);
 static void show_burst_type(void);
 static void displayBurstValue(int burst);
+static void show_pwm_val(void);
+static void config_encoder(int param_value);
 
-static unsigned char func_type   = 0;
-static unsigned char wave_type   = 0;
-static unsigned char burst_type  = 0;
-static unsigned char burst_value = 5; //5 seconds of burst duration
+static unsigned char duty_cycle  = 50; //50% of duty cycle
 
-char *func_array[]  = { "Sine","Square","Triangle","SawTooth" };
-char *burst_array[] = { "None", "Time", "Pulse" 			  };
-char *wave_array[]  = { "NORMAL","FULL-Rect", "HALF-RECT"     };
+static CONFIG_STRUCT cfg_struct = { 0, 0, 0, 5, 50 };
 
-/** Initialize the config menu
- *
- * */
+char *func_array[]  = { "Sine","Square","Triang","Saw" };
+char *burst_array[] = { "None", "Time", "Pulse" 	   };
+char *wave_array[]  = { "NORMAL","FULL", "HALF"        };
+
+Menu menu_cfg_table[] = {
+
+		{ "Func" , set_func_type , show_func_type  },
+		{ "Wave" , set_wave_type , show_wave_type  },
+		{ "Burst", set_burst_type, show_burst_type },
+		{ "About",  about,         0		       }
+};
+
+CONFIG_STRUCT getConfigStruct(void){
+	return cfg_struct;
+}
+
+static void about(void){
+
+	printAt("(C)Bozhidar",0, 0);
+	printAt("03/2026", 0, 1);
+	printAt("Firm.Ver:1.0", 0, 2);
+}
+
+/** Initialize the config menu ***/
 void menu_cfg(void){
 
-	Menu menu_cfg[] = {
-
-			{ "Func" , set_func_type , show_func_type  },
-			{ "Wave" , set_wave_type , show_wave_type  },
-			{ "Burst", set_burst_type, show_burst_type },
-			{ "About", about,          0			   }
-	};
-
-	initMenu("=MENU CONFIG=", menu_cfg, sizeof(menu_cfg) / sizeof(menu_cfg[0]) );
+	initMenu("=MENU CONFIG=", menu_cfg_table, sizeof(menu_cfg_table) / sizeof(menu_cfg_table[0]) );
 
 	enableEncoder(0);
 
@@ -55,9 +66,27 @@ void menu_cfg(void){
 	storeEncoderLastVal();
 
 	//Set the new encoder value as the last known frequency
-	setEncoderVal(burst_value);
+	setEncoderVal(cfg_struct.burst_value);
 }
 
+char* getFuncName(int func_id){
+	return func_array[func_id];
+}
+
+char* getWaveType(int wave_type){
+	return wave_array[wave_type];
+}
+
+char* getBurstType(int burst_type){
+	return burst_array[burst_type];
+}
+
+static void config_encoder(int param_value){
+
+	enableEncoder(1);
+	storeEncoderLastVal();
+	setEncoderVal(param_value);
+}
 
 /**
  * Update burst value automatically when the encoder is rotated.
@@ -67,75 +96,41 @@ void menu_cfg(void){
 void updateBurst(void){
 
 	static unsigned int burst = 0xffff;
-	burst_value = getEncoderVal();
+
+	if(getMenuIndex() == 2 && cfg_struct.burst_type > 0){ //burst type
+		if( !isEncoderEnabled()){
+			burst = 0xffff;
+			config_encoder(cfg_struct.burst_value);
+		}
+	}
+	else if(getMenuIndex() == 0 && cfg_struct.func_type == 1){//pwm
+		if(!isEncoderEnabled()){
+			burst = 0xffff;
+			config_encoder(duty_cycle);
+		}
+	}
+
+	/*burst_value = getEncoderVal();
 
 	if(burst_value == 0){
 		burst_value++;
 	}
 
 	//Enable the encoder only for the burst menu
-	if(getMenuIntex() == 3 && !isEncoderEnabled()){
-		enableEncoder(1);
+	if(getMenuIndex() == 2 && !isEncoderEnabled()){
+		//enableEncoder(1);
+		config_encoder(burst_value);
 	}
-	else if(getMenuIntex() != 3 && isEncoderEnabled()){
+	else if(getMenuIndex() != 2 && isEncoderEnabled()){
 		enableEncoder(0);
 	}
 
 	//If the encoder is rotated and the current option is burst type,
 	//update the burst value and display it on the screen
-	if(burst != burst_value && getMenuIntex() == 3){
+	if(burst != burst_value && getMenuIndex() == 2){
 		burst = burst_value;
 		displayBurstValue(burst);
-	}
-}
-
-/**
- * Force update the current burst value
- * */
-static void displayBurstValue(int burst){
-
-	char str[15];
-
-	snprintf(str, sizeof str, "Val:%d%s",burst_value, burst_type==1 ? "(s)" : "(PULSES)");
-	printAt(str, 0, 2);
-}
-
-static void about(void){
-
-	printAt("(C)Bozhidar",0, 0);
-	printAt("03/2026", 0, 1);
-	printAt("Ver:1.0", 0, 2);
-}
-
-/** Select the function type.
- *  So far, we have: Square wave, Sine wave, Triangle wave, Saw-tooth wave.
- *  However, we can define much more funcitons
- * */
-static void set_func_type(void){
-
-	int list_size = sizeof(func_array) / sizeof(func_array[0]);
-
-	func_type++;
-	if(func_type == list_size){
-		func_type = 0;
-	}
-
-	show_func_type();
-}
-
-/**
- * Select the wave type: NORMAL, HALF-RECTIFIED, FULL RECTIFIED
- * */
-static void set_wave_type(void){
-
-    int list_size = sizeof(wave_array) / sizeof(wave_array[0]);
-
-    wave_type++;
-	if(wave_type == list_size){
-		wave_type = 0;
-	}
-
-	show_wave_type();
+	}*/
 }
 
 /**
@@ -150,12 +145,60 @@ static void set_burst_type(void){
 
     int list_size = sizeof(burst_array) / sizeof(burst_array[0]);
 
-    burst_type++;
-	if(burst_type == list_size){
-		burst_type = 0;
+    cfg_struct.burst_type++;
+	if(cfg_struct.burst_type == list_size){
+		cfg_struct.burst_type = 0;
 	}
 
 	show_burst_type();
+}
+
+
+//Show the current function type: sine, square, triangle
+static void show_func_type(void){
+
+	char str[20];
+
+	snprintf(str,sizeof str, "%s:%s", menu_cfg_table[getMenuIndex()].op_name, func_array[cfg_struct.func_type]);
+	printAt(str, 0, 1);
+
+	if(cfg_struct.func_type == 1){
+		config_encoder(duty_cycle);
+		show_pwm_val();
+	}
+	else{
+		clr_row(2, 1);
+		enableEncoder(0);
+	}
+}
+
+/**
+ * Adjust the PWM value, range 10-100%;
+ * For Square wave type only
+ * **/
+static void show_pwm_val(void){
+
+	char str[10];
+
+	int duty_cycle = 50;
+	snprintf(str, sizeof str, "Duty:%d%%", duty_cycle);
+	printAt(str, 0, 2);
+}
+
+/** Select the function type.
+ *  So far, we have: Square wave, Sine wave, Triangle wave, Saw-tooth wave.
+ *  However, we can define much more funcitons
+ * */
+static void set_func_type(void){
+
+	int list_size = sizeof(func_array) / sizeof(func_array[0]);
+
+	cfg_struct.func_type++;
+	if(cfg_struct.func_type == list_size){
+		cfg_struct.func_type = 0;
+	}
+
+	show_func_type();
 }
 
 //Show the current wave type
@@ -163,8 +206,22 @@ static void show_wave_type(void){
 
 	char str[20];
 
-	snprintf(str, sizeof str, "WAVE:%s", wave_array[wave_type]);
-	printAt(str,0,1);
+	snprintf(str, sizeof str, "%s:%s",menu_cfg_table[getMenuIndex()].op_name, wave_array[cfg_struct.wave_type]);
+	printAt(str, 0, 1);
+}
+
+/**
+ * Select the wave type: NORMAL, HALF-RECTIFIED, FULL RECTIFIED
+ * */
+static void set_wave_type(void){
+
+    int list_size = sizeof(wave_array) / sizeof(wave_array[0]);
+
+    cfg_struct.wave_type++;
+	if(cfg_struct.wave_type == list_size){
+		cfg_struct.wave_type = 0;
+	}
+	show_wave_type();
 }
 
 //Show the current burst type
@@ -172,17 +229,19 @@ static void show_burst_type(void){
 
 	char str[20];
 
-	snprintf(str, sizeof str, "BURST:%s", burst_array[burst_type]);
+	snprintf(str, sizeof str, "%s:%s", menu_cfg_table[getMenuIndex()].op_name, burst_array[cfg_struct.burst_type]);
 	printAt(str, 0, 1);
-	displayBurstValue(burst_value);
+	displayBurstValue(cfg_struct.burst_value);
 }
 
-//Show the current function type: sine, square, triangle
-static void show_func_type(void){
+/** Force update the current burst value */
+static void displayBurstValue(int burst){
 
-	char str[20];
+	char str[15] = {' '};
 
-	snprintf(str, sizeof str, "FUNC:%s", func_array[func_type]);
-	printAt(str, 0, 1);
+	if(cfg_struct.burst_type>0){
+		snprintf(str, sizeof str, ">Val:%d%s", cfg_struct.burst_value, cfg_struct.burst_type==1 ? "(s)" : "(PULSES)");
+	}
+	printAt(str, 0, 2);
 }
 

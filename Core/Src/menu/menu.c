@@ -54,7 +54,7 @@ void op3(void){
 **/
 void initMenu(char* title, Menu *menu_ptr, int size){
 
-	menu_index = 0;
+	menu_index = -1;
 	menu_size  = size;
 
 	storeEncoderLastVal();
@@ -74,6 +74,7 @@ void initMenu(char* title, Menu *menu_ptr, int size){
  * */
 void menuBrowser(void){
 
+	menu_index++;
 	//The end of the menu is reached. Restart the menu index and show the first option
 	if(menu_index == menu_size){
 		menu_index = 0;
@@ -83,14 +84,13 @@ void menuBrowser(void){
 	clrscr();
 	printAt(menuTitle, 0, 0);
 
-	//Display the menu option label
-	printAt(menu_table[menu_index].op_name, 0, 1);
-
 	//Display the sub menu or the parameters of the current menu option
-	if(menu_table[menu_index].f_hover != 0){
-		menu_table[menu_index].f_hover();
+	if(menu_table[menu_index].f_view != 0){
+		menu_table[menu_index].f_view();
 	}
-	menu_index++;
+	else{
+		printAt(menu_table[menu_index].op_name, 0, 1);
+	}
 }
 
 /** Select the current menu option displayed on the screen.
@@ -99,12 +99,10 @@ void menuBrowser(void){
  *
  * */
 void menuSelect(void){
-
-	int tmp_index = (menu_index == 0) ? (menu_size-1) : menu_index-1;
-	menu_table[tmp_index].f_ptr();
+	menu_table[menu_index].f_select();
 }
 
-int getMenuIntex(void){
+int getMenuIndex(void){
 	return menu_index;
 }
 

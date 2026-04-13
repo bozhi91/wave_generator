@@ -13,7 +13,7 @@
 	void printAt(const char* str, int x, int y);
 
 	void initOLED(void);
-	void clr_row(int row);
+	void clr_row(int row, char upd);
 	void clrscr(void);
 	void setFont(int font_id);
 

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "menu_config.h"
 #include "menu.h"
 #include "menu_simulation.h"
 #include "signalGen.h"
@@ -42,6 +43,16 @@ void simulationMenu(void){
 	printAt(" =MAIN-MENU=", 0, 0);
 	snprintf(str, sizeof str, "Off:%dHz", current_frequency);
 	printAt(str, 0, 1);
+
+	CONFIG_STRUCT cfg = getConfigStruct();
+	snprintf(str, sizeof str, "%s:%s", getFuncName(cfg.func_type), getWaveType(cfg.wave_type));
+	printAt(str, 0, 2);
+
+
+	if(cfg.burst_type > 0){
+		snprintf(str, sizeof str, "Burst:%d%s", cfg.burst_value, cfg.burst_type == 1 ? "(s)" : " ");
+		printAt(str, 0, 3);
+	}
 }
 
 //Start/stop simulation.Display the corresponding data on screen.
@@ -54,7 +65,6 @@ void toggleSimulation(void){
 	 * 2) Toggle the simulation -> call the toggleSignalGenerator() from signalGenerator.c
 	 *
 	**/
-
 	//toggleSignalGenerator();
 }
 
