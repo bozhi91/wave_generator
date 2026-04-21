@@ -22,9 +22,6 @@ typedef struct{
 } CONFIG_STRUCT;
 
 CONFIG_STRUCT getConfigStruct(void);
-char* getFuncName(int func_id);
-char* getWaveType(int wave_type);
-char* getBurstType(int burst_type);
 
 
 /**

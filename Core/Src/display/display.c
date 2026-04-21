@@ -9,7 +9,7 @@
 #include <ctype.h>
 
 #define MAX_ROW_SIZE  50
-#define LINE_SPACING  4
+#define LINE_SPACING  5
 
 void displaySplash(void);
 

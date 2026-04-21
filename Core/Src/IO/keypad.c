@@ -51,6 +51,11 @@ void enableEncoder(char status){
 	}
 }
 
+/* Returns the current encoder state
+ *
+ * 1: Enabled
+ * 0: Disabled
+ * */
 char isEncoderEnabled(void){
 	return encoder_state;
 }
@@ -83,7 +88,6 @@ short getEncoderLastVal(void){
 //Store the current encoder value and reset the encoder
 void storeEncoderLastVal(void){
 	encoder_last_val = encode_count;
-	//setEncoderVal(0);
 }
 
 /* Read the encoder data.

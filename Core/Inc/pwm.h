@@ -10,6 +10,7 @@
 
 
 	void StartPWM(int f_out, int duty_cycle);
+	void stopPWM(void);
 	void changePWMFreq(int f_out_hz);
 
 

@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <string.h>
 
+
+/* Start the PWM signal generator at pin D9(internal: PA8 )
+ * Timer_1, CH_1
+ * */
 void StartPWM(int f_out, int duty_cycle){
 
 	/*
@@ -44,8 +48,12 @@ void StartPWM(int f_out, int duty_cycle){
     							  // An ARR value of 7(or 0 to 7 range are 8 combinations), the 50% duty cycle is So CCR1 is 4.
       	  	  	  	      	  	  // An ARR value of 9(10 possible divisions), the 50% of duty is 5. So CCR1 is 5.
 
-    //changePWMFreq(2500);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+}
+
+void stopPWM(void){
+
+	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 }
 
 void changePWMFreq(int f_out_hz){
