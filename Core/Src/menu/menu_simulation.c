@@ -31,6 +31,8 @@ void simulationMenu(void){
 
 	char str[15];
 
+	generateSignalTable();
+
 	//Store the last encoder readings for the previous menu
 	storeEncoderLastVal();
 

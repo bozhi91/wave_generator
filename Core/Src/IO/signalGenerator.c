@@ -20,7 +20,6 @@
 
 static void generateSineWave(char type);
 static void genTriangleWave(char type);
-static void generateSignalTable(void);
 
 uint16_t sine_table[N_SAMPLES];
 
@@ -50,10 +49,6 @@ SignalGenCfg signal_cfg[] = {
 //DAC_Write(2047); // Send a constant impulse of 2048(out of 4095) to the DAC chanel
 
 void initSignalGen(void){
-
-	//StartPWM(1000, 50);
-	//genTrianbleWave();
-	//DAC_Write(2048);//12bits DAC - 0:4095
 
 	setEncoderVal(1);
 	generateSignalTable();
@@ -114,29 +109,50 @@ unsigned int getCurrentFrequency(void){
  * */
 void toggleSignalGenerator(void){
 
+	CONFIG_STRUCT cfg = getConfigStruct();
+
 	if(simulation_state == 0){
 
 		simulation_state = 1;
 		enableEncoder(0);
 		dispCurrentFreq();
-		//Set_DAC_Frequency(getCurrentFrequency());
-		StartPWM(1000, 50);
+
+		if(cfg.func_type == FUNC_TYPE_SQUARE){
+			StartPWM(getCurrentFrequency(), cfg.duty_cycle);
+		}
+		else{
+			unsigned int freq = getCurrentFrequency();
+
+			if(cfg.wave_type == SIGNAL_TYPE_FULL_RECT){
+				freq/=2;
+			}
+
+			startDAC(sine_table, N_SAMPLES, freq);
+		}
 	}
 	else{
 		simulation_state = 0;
 		enableEncoder(1);
 		dispCurrentFreq();
-		//toggleDAC(0);
-		stopPWM();
+
+		if(cfg.func_type == FUNC_TYPE_SQUARE){
+			stopPWM();
+		}
+		else{
+			toggleDAC(0);
+		}
 	}
 }
 
-static void generateSignalTable(void){
+void generateSignalTable(void){
 
 	CONFIG_STRUCT cfg = getConfigStruct();
 
 	if(cfg.func_type == FUNC_TYPE_SINE){
 		generateSineWave(cfg.wave_type);
+	}
+	else if(cfg.func_type == FUNC_TYPE_TRIANGLE){
+		genTriangleWave(cfg.wave_type);
 	}
 	else if(cfg.func_type == FUNC_TYPE_SQUARE){
 
@@ -144,11 +160,6 @@ static void generateSignalTable(void){
 		//May be set some function properties such as duty cycle
 		//StartPWM(1000, 50);
 	}
-	else if(cfg.func_type == FUNC_TYPE_TRIANGLE){
-		genTriangleWave(cfg.wave_type);
-	}
-
-	startDAC(sine_table, N_SAMPLES, getCurrentFrequency());
 }
 
 /******************************* The signal functions are defined below ***********************************/
@@ -156,10 +167,11 @@ static void generateSignalTable(void){
 /** Three types of wave might be generated:
  *
  *  Param:
- *  - Type: The rectification type.
- *  - 0: No rectification.
- *  - 1: Half rectified.
- *  - 2: Full rectified.
+ *  - Type: The wave rectification type.
+ *
+ *  - 0: No rectification
+ *  - 1: Half rectified
+ *  - 2: Full rectified
  * */
 static void generateSineWave(char type){
 
@@ -175,19 +187,21 @@ static void generateSineWave(char type){
 		    sine_table[i] = (uint16_t)(offset + temp_amp * sinf(2.0f * M_PI * i / N_SAMPLES));
 		}
 	}
-	else if(type == SIGNAL_TYPE_HALF_RECT){ //Half-rectified - WON'T BE USED FOR NOW
-
-	}
 	else if(type == SIGNAL_TYPE_FULL_RECT){
 	    //Full-wave rectified
 	    for (int i = 0; i < N_SAMPLES; i++){
 
 	        float s = sinf(2.0f * M_PI * i / N_SAMPLES);
 	        if (s < 0.0f){
-	            s = -s;   // valor absoluto
+	            s = -s;   // Positive values only
 	        }
 	        sine_table[i] = (uint16_t)(4095.0f * s);
 	    }
+	}
+	else if(type == SIGNAL_TYPE_HALF_RECT){
+
+		//TODO: IMPLEMENT!!!!
+		//Half-rectified - WON'T BE USED FOR NOW
 	}
 }
 

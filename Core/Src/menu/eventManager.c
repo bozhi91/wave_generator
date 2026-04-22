@@ -35,9 +35,11 @@ State_Manager STATE_LIST_TABLE[] = {
 	{ CONFIG_MENU,  CONFIG_MENU, 	isKey_2,  menuBrowser }, //BROWSE CONFIG   MENU
 	{ CONFIG_MENU,  CONFIG_MENU, 	isKey_3,  menuSelect  }, //SELECT CONFIG   MENU
 
+	/*
 	{ MAIN_MENU,     SETTINGS_MENU, isKey_3,  menu_set    }, //OPEN   SETTINGS MENU
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_3,  menuBrowser }, //BROWSE SETTINGS MENU
 	{ SETTINGS_MENU, SETTINGS_MENU, isKey_2,  menuSelect  }, //SELECT SETTINGS MENU
+	*/
 
 	{ MAIN_MENU,     ST_ENCODER,    isKey_4,  updateFrequency }, //UPDATE SIGNAL FREQUENCY
 

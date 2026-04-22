@@ -27,6 +27,7 @@
 	int getFuncTabSize(void);
 	int getWaveTabSize(void);
 	int getBurstTabSize(void);
+	void generateSignalTable(void);
 
 	typedef enum{
 		FUNC_TYPE_SINE,
@@ -37,8 +38,8 @@
 
 	typedef enum{
 		SIGNAL_TYPE_NORMAL,
-		SIGNAL_TYPE_HALF_RECT,
 		SIGNAL_TYPE_FULL_RECT,
+		SIGNAL_TYPE_HALF_RECT,
 	}SIGNAL_TYPE_ID;
 
 	typedef struct{

@@ -124,7 +124,7 @@ int main(void){
   /* USER CODE BEGIN 2 */
 
   initOLED();
-  initSignalGen();
+  //initSignalGen();
   enableEncoder(1);
   menuInit();
 
