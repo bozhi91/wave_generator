@@ -121,12 +121,11 @@ void toggleSignalGenerator(void){
 			StartPWM(getCurrentFrequency(), cfg.duty_cycle);
 		}
 		else{
+			//For a full-rectified signal, the frequency must be divided by 2
 			unsigned int freq = getCurrentFrequency();
-
 			if(cfg.wave_type == SIGNAL_TYPE_FULL_RECT){
 				freq/=2;
 			}
-
 			startDAC(sine_table, N_SAMPLES, freq);
 		}
 	}
