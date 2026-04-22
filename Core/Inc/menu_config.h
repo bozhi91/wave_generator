@@ -16,7 +16,7 @@ typedef struct{
 	unsigned char func_type;
 	unsigned char wave_type;
 	unsigned char burst_type;
-	unsigned char burst_value;
+	unsigned short burst_value;
 	unsigned char duty_cycle;
 
 } CONFIG_STRUCT;
