@@ -20,10 +20,10 @@
 
 static void generateSineWave(char type);
 static void genTriangleWave(char type);
+static void genSawToothWave(char type);
 
 uint16_t sine_table[N_SAMPLES];
 
-static unsigned char duty_cycle       = 50; //50% of duty cycle
 static unsigned char simulation_state = 0;
 
 char *func_array[]  = { "Sine",  "Square","Triang" };
@@ -83,7 +83,9 @@ unsigned char getSimulationState(void){
 }
 
 unsigned char getDutyCycle(void){
-	return duty_cycle;
+
+	CONFIG_STRUCT cfg = getConfigStruct();
+	return cfg.duty_cycle;
 }
 
 /*
@@ -111,16 +113,19 @@ void toggleSignalGenerator(void){
 
 	CONFIG_STRUCT cfg = getConfigStruct();
 
+	//Start simulation
 	if(simulation_state == 0){
 
 		simulation_state = 1;
 		enableEncoder(0);
 		dispCurrentFreq();
 
+		//Start PWM generator
 		if(cfg.func_type == FUNC_TYPE_SQUARE){
 			StartPWM(getCurrentFrequency(), cfg.duty_cycle);
 		}
-		else{
+		else{ //Start the analog signal generator: sine, triangle, etc.
+
 			//For a full-rectified signal, the frequency must be divided by 2
 			unsigned int freq = getCurrentFrequency();
 			if(cfg.wave_type == SIGNAL_TYPE_FULL_RECT){
@@ -129,7 +134,7 @@ void toggleSignalGenerator(void){
 			startDAC(sine_table, N_SAMPLES, freq);
 		}
 	}
-	else{
+	else{//Stop the simulation
 		simulation_state = 0;
 		enableEncoder(1);
 		dispCurrentFreq();
@@ -143,6 +148,12 @@ void toggleSignalGenerator(void){
 	}
 }
 
+/**
+ * Signal generator dispatcher.
+ * If an analog function type is selected(sine, triangle, sawtooth, etc),
+ * a single period of the corresponding wave will be generated and stored to a buffer.
+ * Later, this buffer will be used by the DAC to generate the output signal.
+**/
 void generateSignalTable(void){
 
 	CONFIG_STRUCT cfg = getConfigStruct();
@@ -152,6 +163,9 @@ void generateSignalTable(void){
 	}
 	else if(cfg.func_type == FUNC_TYPE_TRIANGLE){
 		genTriangleWave(cfg.wave_type);
+	}
+	else if(cfg.func_type == FUNC_TYPE_SAW){
+		genSawToothWave(cfg.wave_type);
 	}
 	else if(cfg.func_type == FUNC_TYPE_SQUARE){
 
@@ -187,7 +201,7 @@ static void generateSineWave(char type){
 		}
 	}
 	else if(type == SIGNAL_TYPE_FULL_RECT){
-	    //Full-wave rectified
+
 	    for (int i = 0; i < N_SAMPLES; i++){
 
 	        float s = sinf(2.0f * M_PI * i / N_SAMPLES);
@@ -218,6 +232,13 @@ static void genTriangleWave(char type){
 
 	if(type == SIGNAL_TYPE_NORMAL){ //Normal wave. No rectification
 
+		int pos=0;
+		for(int i = 0; i < N_SAMPLES/2; i++){
+			sine_table[pos++] = 2*(AMPLITUDE * i)/100; //Reach max amplitude of 3.6v
+		}
+		for(int i = N_SAMPLES/2; i > 0; i--){
+			sine_table[pos++] = 2*(AMPLITUDE * i)/100;
+		}
 	}
 	else if(type == SIGNAL_TYPE_HALF_RECT){//Half-rectified - WON'T BE USED FOR NOW
 
@@ -225,32 +246,26 @@ static void genTriangleWave(char type){
 	else if(type == SIGNAL_TYPE_FULL_RECT){ //Full wave rectification
 
 	}
-
-	for(int i = 0; i < N_SAMPLES; i++){
-
-		//TRIANGLE WAVE
-		uint32_t value = (2UL * AMPLITUDE * i) / N_SAMPLES;
-		if(value > AMPLITUDE){
-			value = 2 * AMPLITUDE - value;
-		}
-		sine_table[i] = (uint16_t)value;
-
-		/*
-		 //SAWTOOTH WAVE
-		 uint32_t value = (2UL * AMPLITUDE * i) / N_SAMPLES-value;
-
-		if(value > AMPLITUDE){
-			value =0; //2 * AMPLITUDE - value;
-		}
-		triangle_table[i] = (uint16_t)value;*/
-
-		/*
-	    if (i < N_SAMPLES/2){
-	    	triangle_table[i] = (2.0f * i / N_SAMPLES) * AMPLITUDE;
-	    }
-	    else{
-	    	triangle_table[i] = (2.0f - (2.0f * i / N_SAMPLES)) * AMPLITUDE;
-	    }*/
-	}
 }
+
+static void genSawToothWave(char type){
+
+	/*
+	 //SAWTOOTH WAVE
+	 uint32_t value = (2UL * AMPLITUDE * i) / N_SAMPLES-value;
+
+	if(value > AMPLITUDE){
+		value =0; //2 * AMPLITUDE - value;
+	}
+	triangle_table[i] = (uint16_t)value;*/
+
+	/*
+    if (i < N_SAMPLES/2){
+    	triangle_table[i] = (2.0f * i / N_SAMPLES) * AMPLITUDE;
+    }
+    else{
+    	triangle_table[i] = (2.0f - (2.0f * i / N_SAMPLES)) * AMPLITUDE;
+    }*/
+}
+
 
