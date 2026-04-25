@@ -1,4 +1,4 @@
 ../Core/Src/menu/menu_simulation.c:30:6:simulationMenu	48	static
-../Core/Src/menu/menu_simulation.c:62:6:toggleSimulation	4	static
-../Core/Src/menu/menu_simulation.c:78:6:dispCurrentFreq	40	static
-../Core/Src/menu/menu_simulation.c:89:6:updateFrequency	8	static
+../Core/Src/menu/menu_simulation.c:61:6:toggleSimulation	4	static
+../Core/Src/menu/menu_simulation.c:77:6:dispCurrentFreq	40	static
+../Core/Src/menu/menu_simulation.c:88:6:updateFrequency	8	static

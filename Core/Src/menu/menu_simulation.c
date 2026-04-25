@@ -38,7 +38,6 @@ void simulationMenu(void){
 
 	//Set the new encoder value as the last known frequency
 	setEncoderVal(current_frequency/1000);
-
 	enableEncoder(1);
 
 	clrscr();

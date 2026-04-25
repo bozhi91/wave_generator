@@ -30,21 +30,32 @@
 	void generateSignalTable(void);
 
 	typedef enum{
-		FUNC_TYPE_SINE,
-		FUNC_TYPE_SQUARE,
-		FUNC_TYPE_TRIANGLE,
-		FUNC_TYPE_SAW,
+		FUNC_TYPE_SINE     = 1,
+		FUNC_TYPE_SQUARE   = 2,
+		FUNC_TYPE_TRIANGLE = 3,
+		FUNC_TYPE_SAW      = 4,
 	}FUNC_TYPE_ID;
 
 	typedef enum{
 		SIGNAL_TYPE_NORMAL,
-		SIGNAL_TYPE_FULL_RECT,
 		SIGNAL_TYPE_HALF_RECT,
+		SIGNAL_TYPE_FULL_RECT,
 	}SIGNAL_TYPE_ID;
+
+	typedef enum{
+		BURST_NONE,
+		BURST_TIME,
+		BURST_PULSES,
+	}BURST_TYPE_ID;
 
 	typedef struct{
 		FUNC_TYPE_ID func_type;
-		void (*f_ptr)(char signal_type);
+		char* name;
+		unsigned char wave_type[3];
+		void (*f_ptr)(char wave_type);
 	}SignalGenCfg;
+
+	SignalGenCfg* getSignalCfgTable(void);
+	int getFuncById(FUNC_TYPE_ID id);
 
 #endif /* INC_SIGNALGEN_H_ */
