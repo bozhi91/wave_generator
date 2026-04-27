@@ -124,7 +124,6 @@ int main(void){
   /* USER CODE BEGIN 2 */
 
   initOLED();
-  //initSignalGen();
   enableEncoder(1);
   menuInit();
 
@@ -135,7 +134,6 @@ int main(void){
 
 	kbdDriver();
 	eventManager();
-
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
   }

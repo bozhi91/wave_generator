@@ -11,5 +11,6 @@
 	void simulationMenu(void);
 	void dispCurrentFreq(void);
 	void updateFrequency(void);
+	void updBurstCounter(void);
 
 #endif /* INC_MENU_SIMULATION_H_ */

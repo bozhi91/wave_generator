@@ -1,4 +1,4 @@
-../Core/Src/menu/menu_config.c:46:15:getConfigStruct	16	static
+../Core/Src/menu/menu_config.c:46:16:getConfigStruct	4	static
 ../Core/Src/menu/menu_config.c:50:13:about	8	static
 ../Core/Src/menu/menu_config.c:59:6:menu_cfg	8	static
 ../Core/Src/menu/menu_config.c:87:13:config_encoder	16	static

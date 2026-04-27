@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 	#include "display.h"
+	#include "signalGen.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -205,8 +206,9 @@ void SysTick_Handler(void)
 void DMA1_Channel3_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel3_IRQn 0 */
-
+	DAC_Counter();
   /* USER CODE END DMA1_Channel3_IRQn 0 */
+
   HAL_DMA_IRQHandler(&hdma_dac1_ch1);
   /* USER CODE BEGIN DMA1_Channel3_IRQn 1 */
 

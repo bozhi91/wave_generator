@@ -45,28 +45,15 @@ void simulationMenu(void){
 	snprintf(str, sizeof str, "Off:%dHz", current_frequency);
 	printAt(str, 0, 1);
 
-	CONFIG_STRUCT cfg = getConfigStruct();
-	snprintf(str, sizeof str, "%s:%s", getFuncName(cfg.func_type), getWaveType(cfg.wave_type));
+	CONFIG_STRUCT *cfg = getConfigStruct();
+	snprintf(str, sizeof str, "%s:%s", getFuncName(cfg->func_type), getWaveType(cfg->wave_type));
 	printAt(str, 0, 2);
 
 
-	if(cfg.burst_type > 0){
-		snprintf(str, sizeof str, "Burst:%d%s", cfg.burst_value, cfg.burst_type == 1 ? "(s)" : " ");
+	if(cfg->burst_type > 0){
+		snprintf(str, sizeof str, "Burst:%d%s", cfg->burst_value, cfg->burst_type == 1 ? "(s)" : " ");
 		printAt(str, 0, 3);
 	}
-}
-
-//Start/stop simulation.Display the corresponding data on screen.
-//Call the necessary function from the signalGenerator.c in order to start/stop or configure
-void toggleSimulation(void){
-
-	/** TODO:
-	 *
-	 * 1) Display simulation data
-	 * 2) Toggle the simulation -> call the toggleSignalGenerator() from signalGenerator.c
-	 *
-	**/
-	//toggleSignalGenerator();
 }
 
 /* Display the current frequency selected by the encoder.
@@ -91,6 +78,25 @@ void updateFrequency(void){
 		current_frequency = getCurrentFrequency();
 		dispCurrentFreq();
 	}
+}
+
+/**
+ * Display the burst time left
+ * */
+void updBurstCounter(void){
+
+	char str[15];
+	static CONFIG_STRUCT* cfg;
+	cfg = getConfigStruct();
+
+	if(cfg->burst_type == BURST_NONE){
+		return;
+	}
+
+	unsigned int time_left = getTimeLeft();
+
+	snprintf(str, sizeof str, "Burst:%d(s)",time_left);
+	printAt(str, 0, 3);
 }
 
 

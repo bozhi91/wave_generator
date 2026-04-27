@@ -9,6 +9,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "eventManager.h"
+#include "main.h"
 #include "menu_config.h"
 #include "signalGen.h"
 #include "menu_simulation.h"
@@ -25,12 +27,13 @@ static void genTriangleWave(char type);
 static void genSawToothWave(char type);
 
 uint16_t sine_table[N_SAMPLES];
-
 static unsigned char simulation_state = 0;
 
-//char *func_name_list[]  = { "Sine",  "Square","Triang", "SAW" };
-char *burst_type_list[] = { "None",  "Time",  "Pulse"  		  };
-char *wave_type_list[]  = { "NORMAL", "HALF", "RECT"   		  };
+char *burst_type_list[] = { "None",  "Time",  "Pulse" };
+char *wave_type_list[]  = { "NORMAL", "HALF", "RECT"  };
+
+static unsigned int signal_time_start = 0;
+static CONFIG_STRUCT* cfg;
 
 /**
  * This table defines the available functions and the rectification type: (full/half/normal).
@@ -48,18 +51,9 @@ SignalGenCfg signal_cfg_table[] = {
 	{0,0,{0},0}
 };
 
-/*
-  unsigned long sys_clock = HAL_RCC_GetSysClockFreq();
-  unsigned int tim1 = HAL_RCC_GetPCLK2Freq();
-
-  printf("SYSCLK: %lu\n", HAL_RCC_GetSysClockFreq());
-  printf("HCLK  : %lu\n", HAL_RCC_GetHCLKFreq());
-  printf("PCLK1 : %lu\n", HAL_RCC_GetPCLK1Freq());*/
-
-//DAC_Write(2047); // Send a constant impulse of 2048(out of 4095) to the DAC chanel
-
 void initSignalGen(void){
 
+	cfg = getConfigStruct();
 	setEncoderVal(1);
 	generateSignalTable();
 }
@@ -110,8 +104,7 @@ unsigned char getSimulationState(void){
 
 unsigned char getDutyCycle(void){
 
-	CONFIG_STRUCT cfg = getConfigStruct();
-	return cfg.duty_cycle;
+	return cfg->duty_cycle;
 }
 
 /*
@@ -137,35 +130,35 @@ unsigned int getCurrentFrequency(void){
  * */
 void toggleSignalGenerator(void){
 
-	CONFIG_STRUCT cfg = getConfigStruct();
-
 	//Start simulation
 	if(simulation_state == 0){
 
-		simulation_state = 1;
+		signal_time_start = HAL_GetTick();
+		simulation_state  = 1;
 		enableEncoder(0);
 		dispCurrentFreq();
 
 		//Start PWM generator
-		if(cfg.func_type == FUNC_TYPE_SQUARE){
-			StartPWM(getCurrentFrequency(), cfg.duty_cycle);
+		if(cfg->func_type == FUNC_TYPE_SQUARE){
+			StartPWM(getCurrentFrequency(), cfg->duty_cycle);
 		}
 		else{ //Start the analog signal generator: sine, triangle, etc.
-
 			//For a full-rectified signal, the frequency must be divided by 2
 			unsigned int freq = getCurrentFrequency();
-			if(cfg.wave_type == SIGNAL_TYPE_FULL_RECT){
+			if(cfg->wave_type == SIGNAL_TYPE_FULL_RECT){
 				freq/=2;
 			}
 			startDAC(sine_table, N_SAMPLES, freq);
 		}
 	}
 	else{//Stop the simulation
+
+		setState(MAIN_MENU);
 		simulation_state = 0;
 		enableEncoder(1);
 		dispCurrentFreq();
 
-		if(cfg.func_type == FUNC_TYPE_SQUARE){
+		if(cfg->func_type == FUNC_TYPE_SQUARE){
 			stopPWM();
 		}
 		else{
@@ -182,17 +175,71 @@ void toggleSignalGenerator(void){
 **/
 void generateSignalTable(void){
 
-	CONFIG_STRUCT cfg = getConfigStruct();
+	cfg = getConfigStruct();
 
 	//Call the function to generate the
-	if(cfg.func_type != FUNC_TYPE_SQUARE){
+	if(cfg->func_type != FUNC_TYPE_SQUARE){
 
-		int func_id = getFuncById(cfg.func_type);
-		signal_cfg_table[func_id].f_ptr(cfg.wave_type);
+		int func_id = getFuncById(cfg->func_type);
+		signal_cfg_table[func_id].f_ptr(cfg->wave_type);
 	}
 }
 
 /******************************* The signal functions are defined below ***********************************/
+
+void burstPulses(BURST_TYPE_ID burst_type){
+
+	if(burst_type == BURST_PULSES){
+	}
+}
+
+static volatile unsigned int time_left = 0;
+void DAC_Counter(void){
+
+	if(cfg->burst_type == BURST_TIME){
+
+		static unsigned int time_ellapsed = 0;
+		unsigned int timeout = cfg->burst_value*1000;
+
+		if(signal_time_start == 0){
+				signal_time_start = HAL_GetTick();
+		}
+
+		time_ellapsed = HAL_GetTick() - signal_time_start;
+
+		//The burst time is out. Stop the DAC
+		if( time_ellapsed >= timeout){
+
+			signal_time_start = HAL_GetTick();
+			time_left = 0;
+			updBurstCounter();
+			toggleSignalGenerator();
+		}
+		else{
+			time_left = (timeout - time_ellapsed+999)/1000;
+		}
+	}
+	else if(cfg->burst_type == BURST_PULSES){
+
+		static int period = 0;
+		static int count  = 0;
+
+		/*if(count >= 10){
+			period = 0;
+			count  = 0;
+			toggleDAC(0);
+			toggleSignalGenerator();
+		}
+		else{
+
+		}*/
+		count++;
+	}
+}
+
+unsigned int getTimeLeft(void){
+	return time_left;
+}
 
 /** Three types of wave might be generated:
  *
@@ -277,26 +324,10 @@ static void genTriangleWave(char type){
 static void genSawToothWave(char type){
 
 	int pos=0;
+
 	for(int i = 0; i < N_SAMPLES; i++){
 		sine_table[pos++] = (AMPLITUDE * i)/N_SAMPLES; //Reach max amplitude of 3.6v
 	}
-
-	/*
-	 //SAWTOOTH WAVE
-	 uint32_t value = (2UL * AMPLITUDE * i) / N_SAMPLES-value;
-
-	if(value > AMPLITUDE){
-		value =0; //2 * AMPLITUDE - value;
-	}
-	triangle_table[i] = (uint16_t)value;*/
-
-	/*
-    if (i < N_SAMPLES/2){
-    	triangle_table[i] = (2.0f * i / N_SAMPLES) * AMPLITUDE;
-    }
-    else{
-    	triangle_table[i] = (2.0f - (2.0f * i / N_SAMPLES)) * AMPLITUDE;
-    }*/
 }
 
 

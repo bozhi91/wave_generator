@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 /* Start the PWM signal generator at pin D9(internal: PA8 )
  * Timer_1, CH_1
  * */
@@ -33,9 +32,6 @@ void StartPWM(int f_out, int duty_cycle){
 
 	//NOTE: THIS CONFIGURATION WORKS ONLY FOR FREQUENCIES >=1KHz.
 	//For lower frequencies, use a different prescaler.
-
-	//unsigned int in_freq = getTim1Freq();
-
 	unsigned short psc = ceil(getTim1Freq() /( f_out * 65536.0f))-1;
 	unsigned short arr = (getTim1Freq()/( f_out * (psc+1)))-1;
 
@@ -52,7 +48,6 @@ void StartPWM(int f_out, int duty_cycle){
 }
 
 void stopPWM(void){
-
 	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 }
 

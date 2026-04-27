@@ -21,7 +21,7 @@ typedef struct{
 
 } CONFIG_STRUCT;
 
-CONFIG_STRUCT getConfigStruct(void);
+CONFIG_STRUCT *getConfigStruct(void);
 
 
 /**

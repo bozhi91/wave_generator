@@ -43,8 +43,8 @@ Menu menu_cfg_table[] = {
 		{ "About", about,          0		          }
 };
 
-CONFIG_STRUCT getConfigStruct(void){
-	return cfg_struct;
+CONFIG_STRUCT* getConfigStruct(void){
+	return &cfg_struct;
 }
 
 static void about(void){

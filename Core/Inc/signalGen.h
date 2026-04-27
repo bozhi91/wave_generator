@@ -55,6 +55,9 @@
 		void (*f_ptr)(char wave_type);
 	}SignalGenCfg;
 
+	void burstPulses(BURST_TYPE_ID burst_type);
+	void DAC_Counter(void);
+	unsigned int getTimeLeft(void);
 	SignalGenCfg* getSignalCfgTable(void);
 	int getFuncById(FUNC_TYPE_ID id);
 

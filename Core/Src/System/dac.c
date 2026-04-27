@@ -94,7 +94,10 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* dacHandle)
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* DAC1 DMA Init */
+    	DMA1_Channel3->CCR |= DMA_CCR_TCIE;
+        NVIC_EnableIRQ(DMA1_Channel3_IRQn);
     /* DAC1_CH1 Init */
+
     hdma_dac1_ch1.Instance = DMA1_Channel3;
     hdma_dac1_ch1.Init.Direction = DMA_MEMORY_TO_PERIPH;
     hdma_dac1_ch1.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -139,7 +142,6 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* dacHandle)
   /* USER CODE END DAC1_MspDeInit 1 */
   }
 }
-
 /* USER CODE BEGIN 1 */
 
 	//Initialize the DAC channel
@@ -162,7 +164,6 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* dacHandle)
 	void toggleDAC(char status){
 
 		if(status == 0){
-		//	Set_DAC_Frequency(0);
 			HAL_TIM_Base_Stop( getTimInst(6) );
 		}
 		else if(status == 1){
