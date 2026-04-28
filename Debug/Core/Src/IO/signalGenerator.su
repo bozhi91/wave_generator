@@ -11,9 +11,8 @@
 ../Core/Src/IO/signalGenerator.c:114:14:getCurrentFrequency	16	static
 ../Core/Src/IO/signalGenerator.c:131:6:toggleSignalGenerator	16	static
 ../Core/Src/IO/signalGenerator.c:176:6:generateSignalTable	16	static
-../Core/Src/IO/signalGenerator.c:190:6:burstPulses	16	static
-../Core/Src/IO/signalGenerator.c:197:6:DAC_Counter	16	static
-../Core/Src/IO/signalGenerator.c:240:14:getTimeLeft	4	static
-../Core/Src/IO/signalGenerator.c:253:13:genSineWave	56	static
-../Core/Src/IO/signalGenerator.c:300:13:genTriangleWave	40	static
-../Core/Src/IO/signalGenerator.c:324:13:genSawToothWave	24	static
+../Core/Src/IO/signalGenerator.c:191:6:DAC_Counter	16	static
+../Core/Src/IO/signalGenerator.c:230:14:getTimeLeft	4	static
+../Core/Src/IO/signalGenerator.c:243:13:genSineWave	56	static
+../Core/Src/IO/signalGenerator.c:290:13:genTriangleWave	40	static
+../Core/Src/IO/signalGenerator.c:314:13:genSawToothWave	24	static

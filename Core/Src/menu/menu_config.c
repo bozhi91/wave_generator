@@ -119,7 +119,6 @@ void updateBurst(void){
 		else if(cfg_struct.burst_type == 2 && cfg_encoder == 1){ //burst type -> pulses
 
 			//TODO: replace the burst_value with pulse_burst
-
 			cfg_encoder = 0;
 			config_encoder(&cfg_struct.burst_value);
 		}
@@ -247,7 +246,7 @@ static void displayBurstValue(short burst){
 	char str[15] = {' '};
 
 	if(cfg_struct.burst_type>0){
-		snprintf(str, sizeof str, ">Val:%d%s", burst, cfg_struct.burst_type==1 ? "(s)" : "(PULSES)");
+		snprintf(str, sizeof str, "Val:%d%s", burst, cfg_struct.burst_type==1 ? "(s)" : "(PULSE)");
 	}
 	printAt(str, 0, 2);
 }

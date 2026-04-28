@@ -20,8 +20,9 @@
 #define KEY_3   (GPIO_B & GPIO_PIN_4)
 #define ENC_SW  (GPIO_B & GPIO_PIN_1)	//Encoder - switch key
 
-#define KEY_UP_DELAY 	100
-#define KEY_DOWN_DELAY  200
+
+#define KEY_UP_DURATION  	180	//A minimum key release duration
+#define KEY_DOWN_DURATION   80	//A minimum key press duration
 
 static unsigned char last_key = 0;
 static volatile unsigned char enc_l = 0;
@@ -127,7 +128,7 @@ void kbdDriver(void){
 	else if(pressed){//ALL keys are released - previous state was 'pressed'
 
 		t_release = HAL_GetTick();
-		last_key  = ((t_release - t_press) > KEY_UP_DELAY) ? key_id : 0;
+		last_key  = ((t_release - t_press) > KEY_DOWN_DURATION) ? key_id : 0;
 		pressed   = 0;
 		key_id    = 0;
 	}
@@ -140,7 +141,7 @@ void kbdDriver(void){
 	if(key_id != 0 && !pressed){
 
 		t_press = HAL_GetTick();
-		if((t_press - t_release) > KEY_DOWN_DELAY ){
+		if((t_press - t_release) > KEY_UP_DURATION ){
 	        pressed = 1;
 	    }
 	    else{

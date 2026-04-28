@@ -187,12 +187,6 @@ void generateSignalTable(void){
 
 /******************************* The signal functions are defined below ***********************************/
 
-void burstPulses(BURST_TYPE_ID burst_type){
-
-	if(burst_type == BURST_PULSES){
-	}
-}
-
 static volatile unsigned int time_left = 0;
 void DAC_Counter(void){
 
@@ -221,18 +215,14 @@ void DAC_Counter(void){
 	}
 	else if(cfg->burst_type == BURST_PULSES){
 
-		static int period = 0;
 		static int count  = 0;
+		static unsigned int time = 0;
 
-		/*if(count >= 10){
-			period = 0;
-			count  = 0;
+		if(count >= (cfg->burst_value/2)){
+			count = 0;
 			toggleDAC(0);
 			toggleSignalGenerator();
 		}
-		else{
-
-		}*/
 		count++;
 	}
 }

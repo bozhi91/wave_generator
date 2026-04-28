@@ -51,7 +51,7 @@ void simulationMenu(void){
 
 
 	if(cfg->burst_type > 0){
-		snprintf(str, sizeof str, "Burst:%d%s", cfg->burst_value, cfg->burst_type == 1 ? "(s)" : " ");
+		snprintf(str, sizeof str, "Burst:%d(%s)", cfg->burst_value, cfg->burst_type == 1 ? "s" : "p");
 		printAt(str, 0, 3);
 	}
 }
@@ -93,10 +93,12 @@ void updBurstCounter(void){
 		return;
 	}
 
-	unsigned int time_left = getTimeLeft();
+	if(cfg->burst_type == BURST_TIME){
 
-	snprintf(str, sizeof str, "Burst:%d(s)",time_left);
-	printAt(str, 0, 3);
+		unsigned int time_left = getTimeLeft();
+		snprintf(str, sizeof str, "Burst:%d(s)", time_left);
+		printAt(str, 0, 3);
+	}
 }
 
 
