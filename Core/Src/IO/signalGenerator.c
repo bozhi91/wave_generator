@@ -27,7 +27,7 @@ static void genTriangleWave(char type);
 static void genSawToothWave(char type);
 
 uint16_t sine_table[N_SAMPLES];
-static unsigned char simulation_state = 0;
+static volatile unsigned char simulation_state = 0;
 
 char *burst_type_list[] = { "None",  "Time",  "Pulse" };
 char *wave_type_list[]  = { "NORMAL", "HALF", "RECT"  };
@@ -103,7 +103,6 @@ unsigned char getSimulationState(void){
 }
 
 unsigned char getDutyCycle(void){
-
 	return cfg->duty_cycle;
 }
 
@@ -133,8 +132,8 @@ void toggleSignalGenerator(void){
 	//Start simulation
 	if(simulation_state == 0){
 
-		signal_time_start = HAL_GetTick();
 		simulation_state  = 1;
+		signal_time_start = HAL_GetTick();
 		enableEncoder(0);
 		dispCurrentFreq();
 
@@ -152,11 +151,7 @@ void toggleSignalGenerator(void){
 		}
 	}
 	else{//Stop the simulation
-
-		setState(MAIN_MENU);
 		simulation_state = 0;
-		enableEncoder(1);
-		dispCurrentFreq();
 
 		if(cfg->func_type == FUNC_TYPE_SQUARE){
 			stopPWM();
@@ -164,6 +159,10 @@ void toggleSignalGenerator(void){
 		else{
 			toggleDAC(0);
 		}
+
+		setState(MAIN_MENU);
+		enableEncoder(1);
+		dispCurrentFreq();
 	}
 }
 
@@ -190,13 +189,17 @@ void generateSignalTable(void){
 static volatile unsigned int time_left = 0;
 void DAC_Counter(void){
 
+	if(simulation_state == 0){
+		return;
+	}
+
 	if(cfg->burst_type == BURST_TIME){
 
 		static unsigned int time_ellapsed = 0;
 		unsigned int timeout = cfg->burst_value*1000;
 
 		if(signal_time_start == 0){
-				signal_time_start = HAL_GetTick();
+			signal_time_start = HAL_GetTick();
 		}
 
 		time_ellapsed = HAL_GetTick() - signal_time_start;
@@ -213,15 +216,14 @@ void DAC_Counter(void){
 			time_left = (timeout - time_ellapsed+999)/1000;
 		}
 	}
-	else if(cfg->burst_type == BURST_PULSES){
+	else if(cfg->burst_type == BURST_PULSES && simulation_state == 1){
 
-		static int count  = 0;
-		static unsigned int time = 0;
+		static volatile int count = 0;
 
-		if(count >= (cfg->burst_value/2)){
+		if(count >= (cfg->burst_value*2)){
 			count = 0;
-			toggleDAC(0);
 			toggleSignalGenerator();
+			return;
 		}
 		count++;
 	}
