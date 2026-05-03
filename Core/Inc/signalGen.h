@@ -34,6 +34,7 @@
 		FUNC_TYPE_SQUARE   = 2,
 		FUNC_TYPE_TRIANGLE = 3,
 		FUNC_TYPE_SAW      = 4,
+		FUNC_TYPE_PWM      = 5,
 	}FUNC_TYPE_ID;
 
 	typedef enum{

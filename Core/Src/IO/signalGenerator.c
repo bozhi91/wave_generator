@@ -25,6 +25,7 @@
 static void genSineWave(char type);
 static void genTriangleWave(char type);
 static void genSawToothWave(char type);
+static void genSquareWave(char type);
 
 uint16_t sine_table[N_SAMPLES];
 static volatile unsigned char simulation_state = 0;
@@ -46,7 +47,7 @@ SignalGenCfg signal_cfg_table[] = {
 	{ FUNC_TYPE_SINE,     "SINE",   { SIGNAL_TYPE_NORMAL, SIGNAL_TYPE_FULL_RECT,  SIGNAL_TYPE_HALF_RECT }, genSineWave },
 	{ FUNC_TYPE_TRIANGLE, "TRIANG", { SIGNAL_TYPE_NORMAL, SIGNAL_TYPE_HALF_RECT }, genTriangleWave  	 		       },
 	{ FUNC_TYPE_SAW,      "SAW",    { SIGNAL_TYPE_NORMAL, SIGNAL_TYPE_HALF_RECT }, genSawToothWave                     },
-	{ FUNC_TYPE_SQUARE,   "SQUARE", { SIGNAL_TYPE_NORMAL }, 0 },
+	{ FUNC_TYPE_SQUARE,   "SQUARE", { SIGNAL_TYPE_NORMAL }, genSquareWave },
 
 	{0,0,{0},0}
 };
@@ -138,7 +139,7 @@ void toggleSignalGenerator(void){
 		dispCurrentFreq();
 
 		//Start PWM generator
-		if(cfg->func_type == FUNC_TYPE_SQUARE){
+		if(cfg->func_type == FUNC_TYPE_PWM) {
 			StartPWM(getCurrentFrequency(), cfg->duty_cycle);
 		}
 		else{ //Start the analog signal generator: sine, triangle, etc.
@@ -153,7 +154,7 @@ void toggleSignalGenerator(void){
 	else{//Stop the simulation
 		simulation_state = 0;
 
-		if(cfg->func_type == FUNC_TYPE_SQUARE){
+		if(cfg->func_type == FUNC_TYPE_PWM){
 			stopPWM();
 		}
 		else{
@@ -176,8 +177,8 @@ void generateSignalTable(void){
 
 	cfg = getConfigStruct();
 
-	//Call the function to generate the
-	if(cfg->func_type != FUNC_TYPE_SQUARE){
+	//Call the function to generate the analog signal
+	if(cfg->func_type != FUNC_TYPE_PWM){
 
 		int func_id = getFuncById(cfg->func_type);
 		signal_cfg_table[func_id].f_ptr(cfg->wave_type);
@@ -319,6 +320,18 @@ static void genSawToothWave(char type){
 
 	for(int i = 0; i < N_SAMPLES; i++){
 		sine_table[pos++] = (AMPLITUDE * i)/N_SAMPLES; //Reach max amplitude of 3.6v
+	}
+}
+
+static void genSquareWave(char type){
+
+	int pos = 0;
+
+	for(int i = 0; i < N_SAMPLES/2; i++){
+		sine_table[pos++] = AMPLITUDE;  //Reach max amplitude of 3.6v
+	}
+	for(int i = N_SAMPLES/2; i > 0; i--){
+		sine_table[pos++] = 0;
 	}
 }
 
